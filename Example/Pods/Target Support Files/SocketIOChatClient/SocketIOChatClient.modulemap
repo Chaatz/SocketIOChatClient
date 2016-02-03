@@ -1,0 +1,6 @@
+framework module SocketIOChatClient {
+  umbrella header "SocketIOChatClient-umbrella.h"
+
+  export *
+  module * { export * }
+}
