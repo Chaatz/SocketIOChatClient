@@ -20,11 +20,11 @@ Pod::Spec.new do |s|
 A simple SocketIO client with live chat user interface
                        DESC
 
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/SocketIOChatClient"
+  s.homepage         = "https://github.com/Chaatz/SocketIOChatClient"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "Kenneth Tsang" => "kenneth.tsang@chaatz.com" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/SocketIOChatClient.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/Chaatz/SocketIOChatClient.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.platform     = :ios, '8.0'
