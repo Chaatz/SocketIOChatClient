@@ -10,7 +10,11 @@ PODS:
     - Nimble
     - Quick
   - Quick (0.8.0)
-  - SocketIOChatClient (0.1.0)
+  - SnapKit (0.19.1)
+  - Socket.IO-Client-Swift (5.3.1)
+  - SocketIOChatClient (0.1.0):
+    - SnapKit
+    - Socket.IO-Client-Swift
 
 DEPENDENCIES:
   - FBSnapshotTestCase
@@ -28,6 +32,8 @@ SPEC CHECKSUMS:
   Nimble: 4c353d43735b38b545cbb4cb91504588eb5de926
   Nimble-Snapshots: ab41dd737dcd33a0b0cb005a30465fef70b7207a
   Quick: 563d0f6ec5f72e394645adb377708639b7dd38ab
-  SocketIOChatClient: e0d3379122ae8dd3dcac570a6620a1d09af7eb13
+  SnapKit: eff58d6e3451bf2f482db2eccf86aecf371dc62d
+  Socket.IO-Client-Swift: abfed28a1e4ce09fb12d75cfaecc5b719bc584ea
+  SocketIOChatClient: ad42a48211a814b04810998c122288233c71d3b3
 
 COCOAPODS: 0.39.0

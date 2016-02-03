@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="8yu-4y-d5V" customClass="UserJoinCell" customModule="SocketIO" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8yu-4y-d5V" id="pAg-qx-DhX">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PTe-Ph-uhM">
+                        <rect key="frame" x="10" y="0.0" width="92" height="35"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="eventLabel" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JgY-M3-z0f">
+                                <rect key="frame" x="8" y="4" width="76" height="27"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="JgY-M3-z0f" secondAttribute="trailing" constant="8" id="0kS-eP-fki"/>
+                            <constraint firstItem="JgY-M3-z0f" firstAttribute="leading" secondItem="PTe-Ph-uhM" secondAttribute="leading" constant="8" id="UFw-Ej-jdw"/>
+                            <constraint firstItem="JgY-M3-z0f" firstAttribute="top" secondItem="PTe-Ph-uhM" secondAttribute="top" constant="4" id="tzD-Co-EYj"/>
+                            <constraint firstAttribute="bottom" secondItem="JgY-M3-z0f" secondAttribute="bottom" constant="4" id="wki-WA-hHt"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="PTe-Ph-uhM" secondAttribute="bottom" constant="8" id="aYQ-gV-fYd"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PTe-Ph-uhM" secondAttribute="trailing" constant="10" id="oId-56-Ri5"/>
+                    <constraint firstItem="PTe-Ph-uhM" firstAttribute="leading" secondItem="pAg-qx-DhX" secondAttribute="leading" constant="10" id="tSJ-cv-CCh"/>
+                    <constraint firstItem="PTe-Ph-uhM" firstAttribute="top" secondItem="pAg-qx-DhX" secondAttribute="top" id="yBb-Ya-VsF"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="bubbleView" destination="PTe-Ph-uhM" id="0hJ-tk-pkh"/>
+                <outlet property="eventLabel" destination="JgY-M3-z0f" id="dcn-Gc-q8f"/>
+            </connections>
+            <point key="canvasLocation" x="566" y="333"/>
+        </tableViewCell>
+    </objects>
+</document>

@@ -8,12 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
-		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
-		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
-		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		9CEA5CEE8B359392104E2D68 /* Pods_SocketIOChatClient_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95B05DC3766458D67D76C100 /* Pods_SocketIOChatClient_Example.framework */; };
+		9FC301301C61BB9D00F56FDF /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC3012C1C61BB9D00F56FDF /* ChatViewController.swift */; };
+		9FC301311C61BB9D00F56FDF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FC3012D1C61BB9D00F56FDF /* Images.xcassets */; };
+		9FC301321C61BB9D00F56FDF /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC3012E1C61BB9D00F56FDF /* LoginViewController.swift */; };
+		9FC301331C61BB9D00F56FDF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FC3012F1C61BB9D00F56FDF /* Main.storyboard */; };
 		B4BF44EC8066A1072706ABA0 /* Pods_SocketIOChatClient_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE7F9330D224215DB3172CEC /* Pods_SocketIOChatClient_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -32,9 +33,6 @@
 		607FACD01AFB9204008FA782 /* SocketIOChatClient_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SocketIOChatClient_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		607FACD71AFB9204008FA782 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* SocketIOChatClient_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SocketIOChatClient_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -43,6 +41,10 @@
 		7D4C1DBE8EFB570D36DE40AC /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		905308AADE40222F4387231E /* Pods-SocketIOChatClient_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocketIOChatClient_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SocketIOChatClient_Tests/Pods-SocketIOChatClient_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		95B05DC3766458D67D76C100 /* Pods_SocketIOChatClient_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SocketIOChatClient_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9FC3012C1C61BB9D00F56FDF /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		9FC3012D1C61BB9D00F56FDF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		9FC3012E1C61BB9D00F56FDF /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		9FC3012F1C61BB9D00F56FDF /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		9FDF2790C378EC3DBE6FEB30 /* Pods-SocketIOChatClient_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocketIOChatClient_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SocketIOChatClient_Example/Pods-SocketIOChatClient_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		C9207F7F652BFB08B478EFD7 /* Pods-SocketIOChatClient_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocketIOChatClient_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SocketIOChatClient_Tests/Pods-SocketIOChatClient_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		DE7F9330D224215DB3172CEC /* Pods_SocketIOChatClient_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SocketIOChatClient_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,9 +96,10 @@
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
-				607FACD71AFB9204008FA782 /* ViewController.swift */,
-				607FACD91AFB9204008FA782 /* Main.storyboard */,
-				607FACDC1AFB9204008FA782 /* Images.xcassets */,
+				9FC3012C1C61BB9D00F56FDF /* ChatViewController.swift */,
+				9FC3012D1C61BB9D00F56FDF /* Images.xcassets */,
+				9FC3012E1C61BB9D00F56FDF /* LoginViewController.swift */,
+				9FC3012F1C61BB9D00F56FDF /* Main.storyboard */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 			);
@@ -246,9 +249,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
+				9FC301331C61BB9D00F56FDF /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
-				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				9FC301311C61BB9D00F56FDF /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,7 +362,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				9FC301321C61BB9D00F56FDF /* LoginViewController.swift in Sources */,
+				9FC301301C61BB9D00F56FDF /* ChatViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,14 +387,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		607FACD91AFB9204008FA782 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				607FACDA1AFB9204008FA782 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		607FACDE1AFB9204008FA782 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -439,7 +435,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -477,7 +473,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

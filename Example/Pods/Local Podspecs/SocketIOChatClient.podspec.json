@@ -1,15 +1,15 @@
 {
   "name": "SocketIOChatClient",
   "version": "0.1.0",
-  "summary": "A short description of SocketIOChatClient.",
-  "description": "",
-  "homepage": "https://github.com/<GITHUB_USERNAME>/SocketIOChatClient",
+  "summary": "A simple SocketIO client with live chat UI",
+  "description": "A simple SocketIO client with live chat user interface",
+  "homepage": "https://github.com/Chaatz/SocketIOChatClient",
   "license": "MIT",
   "authors": {
-    "Kenneth": "kenneth.tsang@chaatz.com"
+    "Kenneth Tsang": "kenneth.tsang@chaatz.com"
   },
   "source": {
-    "git": "https://github.com/<GITHUB_USERNAME>/SocketIOChatClient.git",
+    "git": "https://github.com/Chaatz/SocketIOChatClient.git",
     "tag": "0.1.0"
   },
   "platforms": {
@@ -19,7 +19,15 @@
   "source_files": "Pod/Classes/**/*",
   "resource_bundles": {
     "SocketIOChatClient": [
-      "Pod/Assets/*.png"
+      "Pod/Assets/*.xib"
+    ]
+  },
+  "dependencies": {
+    "Socket.IO-Client-Swift": [
+
+    ],
+    "SnapKit": [
+
     ]
   }
 }

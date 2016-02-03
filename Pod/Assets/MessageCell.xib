@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Oyc-Fh-I3L" customClass="MessageCell" customModule="SocketIOChatClient" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Oyc-Fh-I3L" id="Lhx-Af-me5">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BAK-OE-B8r">
+                        <rect key="frame" x="10" y="0.0" width="145" height="35"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="nameLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lUb-3B-8eP">
+                                <rect key="frame" x="38" y="4" width="99" height="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="q3B-xd-Xe2">
+                                <rect key="frame" x="0.0" y="0.0" width="30" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="Cns-32-nwD"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="messageLabel" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="347-Op-vBr">
+                                <rect key="frame" x="38" y="19" width="99" height="12"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="347-Op-vBr" firstAttribute="leading" secondItem="q3B-xd-Xe2" secondAttribute="trailing" constant="8" id="Gl5-na-1xn"/>
+                            <constraint firstItem="lUb-3B-8eP" firstAttribute="leading" secondItem="BAK-OE-B8r" secondAttribute="leading" constant="8" id="Jlf-pg-Wld"/>
+                            <constraint firstAttribute="bottom" secondItem="347-Op-vBr" secondAttribute="bottom" constant="4" id="NJ2-hh-Pot"/>
+                            <constraint firstItem="347-Op-vBr" firstAttribute="leading" secondItem="BAK-OE-B8r" secondAttribute="leading" constant="8" id="RCf-94-lwy"/>
+                            <constraint firstItem="lUb-3B-8eP" firstAttribute="height" secondItem="347-Op-vBr" secondAttribute="height" id="Vm0-dE-2rQ"/>
+                            <constraint firstItem="lUb-3B-8eP" firstAttribute="top" secondItem="BAK-OE-B8r" secondAttribute="top" constant="4" id="aan-VU-QsC"/>
+                            <constraint firstItem="q3B-xd-Xe2" firstAttribute="top" secondItem="BAK-OE-B8r" secondAttribute="top" id="csF-WM-HRk"/>
+                            <constraint firstItem="lUb-3B-8eP" firstAttribute="leading" secondItem="q3B-xd-Xe2" secondAttribute="trailing" constant="8" id="gwd-gF-Ebp"/>
+                            <constraint firstItem="347-Op-vBr" firstAttribute="top" secondItem="lUb-3B-8eP" secondAttribute="bottom" id="ltG-yz-ATu"/>
+                            <constraint firstItem="q3B-xd-Xe2" firstAttribute="leading" secondItem="BAK-OE-B8r" secondAttribute="leading" id="omr-gZ-Yqa"/>
+                            <constraint firstAttribute="trailing" secondItem="lUb-3B-8eP" secondAttribute="trailing" constant="8" id="rIe-n2-9aO"/>
+                            <constraint firstAttribute="trailing" secondItem="347-Op-vBr" secondAttribute="trailing" constant="8" id="s6f-TN-IDu"/>
+                            <constraint firstAttribute="bottom" secondItem="q3B-xd-Xe2" secondAttribute="bottom" id="tau-ly-NXr"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Jlf-pg-Wld"/>
+                                <exclude reference="Vm0-dE-2rQ"/>
+                                <exclude reference="RCf-94-lwy"/>
+                            </mask>
+                        </variation>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="BAK-OE-B8r" secondAttribute="bottom" constant="8" id="HG0-kR-ONR"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="BAK-OE-B8r" secondAttribute="trailing" constant="10" id="XUH-zT-4Wn"/>
+                    <constraint firstItem="BAK-OE-B8r" firstAttribute="top" secondItem="Lhx-Af-me5" secondAttribute="top" id="gXp-11-sSj"/>
+                    <constraint firstItem="BAK-OE-B8r" firstAttribute="leading" secondItem="Lhx-Af-me5" secondAttribute="leading" constant="10" id="m9J-79-WH2"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="bubbleView" destination="BAK-OE-B8r" id="Teg-I7-6aC"/>
+                <outlet property="iconView" destination="q3B-xd-Xe2" id="HxK-F2-WOE"/>
+                <outlet property="messageLabel" destination="347-Op-vBr" id="Svr-GB-DCN"/>
+                <outlet property="nameLabel" destination="lUb-3B-8eP" id="GUu-Q7-XTB"/>
+            </connections>
+            <point key="canvasLocation" x="389" y="175"/>
+        </tableViewCell>
+    </objects>
+</document>

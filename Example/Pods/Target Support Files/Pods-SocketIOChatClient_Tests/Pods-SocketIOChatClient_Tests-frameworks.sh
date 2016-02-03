@@ -84,6 +84,8 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "Pods-SocketIOChatClient_Tests/SnapKit.framework"
+  install_framework "Pods-SocketIOChatClient_Tests/SocketIOClientSwift.framework"
   install_framework "Pods-SocketIOChatClient_Tests/SocketIOChatClient.framework"
   install_framework "Pods-SocketIOChatClient_Tests/FBSnapshotTestCase.framework"
   install_framework "Pods-SocketIOChatClient_Tests/Nimble.framework"
@@ -91,6 +93,8 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-SocketIOChatClient_Tests/Quick.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "Pods-SocketIOChatClient_Tests/SnapKit.framework"
+  install_framework "Pods-SocketIOChatClient_Tests/SocketIOClientSwift.framework"
   install_framework "Pods-SocketIOChatClient_Tests/SocketIOChatClient.framework"
   install_framework "Pods-SocketIOChatClient_Tests/FBSnapshotTestCase.framework"
   install_framework "Pods-SocketIOChatClient_Tests/Nimble.framework"
