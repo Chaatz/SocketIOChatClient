@@ -6,14 +6,14 @@
 //
 //
 
-import SnapKit
+import Cartography
 
 final class LiveChatToolbar: UIView {
     //MARK: Init
     weak private var socket: SocketIOChatClient?
 
     lazy var textField: TransparentTextField = {
-        let _textField = TransparentTextField()
+        let _textField = TransparentTextField(maxLength: (self.socket?.maxMessageLength)!)
         _textField.delegate = self
         _textField.font = UIFont.systemFontOfSize(15)
         _textField.returnKeyType = .Send
@@ -43,24 +43,22 @@ final class LiveChatToolbar: UIView {
         addSubview(textField)
         addSubview(sendButton)
         
-        line.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(0)
-            make.left.equalTo(10)
-            make.right.equalTo(-10)
-            make.height.equalTo(max(0.5, 1.0 / UIScreen.mainScreen().scale))
+        constrain(self, line) { view, line in
+            line.top == view.top
+            line.left == view.left + 10
+            line.right == view.right - 10
+            line.height == max(0.5, 1.0 / UIScreen.mainScreen().scale)
         }
         
-        sendButton.snp_makeConstraints { (make) -> Void in
-            make.top.equalTo(0)
-            make.bottom.equalTo(0)
-            make.right.equalTo(-10)
-        }
-        
-        textField.snp_makeConstraints { [unowned self] (make) -> Void in
-            make.left.equalTo(10)
-            make.right.equalTo(self.sendButton.snp_left).offset(-10)
-            make.top.equalTo(8)
-            make.bottom.equalTo(-8)
+        constrain(self, sendButton, textField) { view, sendButton, textField in
+            sendButton.top == view.top
+            sendButton.bottom == view.bottom
+            sendButton.right == view.right - 10
+            
+            textField.left == view.left + 10
+            textField.right == sendButton.left - 10
+            textField.top == view.top + 8
+            textField.bottom == view.bottom - 8
         }
     }
     
@@ -93,13 +91,21 @@ extension LiveChatToolbar: UITextFieldDelegate {
 
 //MARK: TransparentTextField
 final class TransparentTextField: UITextField {
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initTextField()
-    }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    var maxLength = 140
+//    required init?(coder aDecoder: NSCoder) {
+//        super.init(coder: aDecoder)
+//        initTextField()
+//    }
+//    
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        initTextField()
+//    }
+    
+    convenience init(maxLength: Int) {
+        self.init()
+        self.maxLength = maxLength
         initTextField()
     }
     

@@ -39,6 +39,6 @@ A simple SocketIO client with live chat user interface
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
     s.dependency 'Socket.IO-Client-Swift'
-    s.dependency 'SnapKit'
+    s.dependency 'Cartography'
 
 end

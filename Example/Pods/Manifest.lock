@@ -1,4 +1,5 @@
 PODS:
+  - Cartography (0.6.0)
   - FBSnapshotTestCase (2.0.7):
     - FBSnapshotTestCase/SwiftSupport (= 2.0.7)
   - FBSnapshotTestCase/Core (2.0.7)
@@ -10,10 +11,9 @@ PODS:
     - Nimble
     - Quick
   - Quick (0.8.0)
-  - SnapKit (0.19.1)
   - Socket.IO-Client-Swift (5.3.1)
   - SocketIOChatClient (0.1.0):
-    - SnapKit
+    - Cartography
     - Socket.IO-Client-Swift
 
 DEPENDENCIES:
@@ -28,12 +28,12 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
+  Cartography: 70af183a248547694a8cfaa6b989cb7e04589985
   FBSnapshotTestCase: 7e85180d0d141a0cf472352edda7e80d7eaeb547
   Nimble: 4c353d43735b38b545cbb4cb91504588eb5de926
   Nimble-Snapshots: ab41dd737dcd33a0b0cb005a30465fef70b7207a
   Quick: 563d0f6ec5f72e394645adb377708639b7dd38ab
-  SnapKit: eff58d6e3451bf2f482db2eccf86aecf371dc62d
   Socket.IO-Client-Swift: abfed28a1e4ce09fb12d75cfaecc5b719bc584ea
-  SocketIOChatClient: ad42a48211a814b04810998c122288233c71d3b3
+  SocketIOChatClient: 9ea8c16e38d061cc20d9e57e5d93f08ae319af3a
 
 COCOAPODS: 0.39.0

@@ -84,12 +84,12 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "Pods-SocketIOChatClient_Example/SnapKit.framework"
+  install_framework "Pods-SocketIOChatClient_Example/Cartography.framework"
   install_framework "Pods-SocketIOChatClient_Example/SocketIOClientSwift.framework"
   install_framework "Pods-SocketIOChatClient_Example/SocketIOChatClient.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "Pods-SocketIOChatClient_Example/SnapKit.framework"
+  install_framework "Pods-SocketIOChatClient_Example/Cartography.framework"
   install_framework "Pods-SocketIOChatClient_Example/SocketIOClientSwift.framework"
   install_framework "Pods-SocketIOChatClient_Example/SocketIOChatClient.framework"
 fi

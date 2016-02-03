@@ -16,6 +16,9 @@ public protocol SocketIOChatClientDelegate: class {
 }
 
 final public class SocketIOChatClient {
+    //MARK: Customizable Properties
+    public var maxMessageLength = 140
+
     //MARK: Init
     private let socket: SocketIOClient
     private let timeout: Int
@@ -107,7 +110,7 @@ final public class SocketIOChatClient {
         delegate?.SocketIOReceiveEvent(event)
     }
     
-    public func sendMessage(message: String) -> Bool {
+    func sendMessage(message: String) -> Bool {
         if socket.status == SocketIOClientStatus.Connected {
             socket.emit("new message", message)
             if let event = SocketIOEvent(username: self.username, message: message, type: .NewMessage) {

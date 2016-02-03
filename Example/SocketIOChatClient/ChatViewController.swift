@@ -8,7 +8,7 @@
 
 import UIKit
 import SocketIOChatClient
-import SnapKit
+import Cartography
 
 class ChatViewController: UIViewController {
 
@@ -16,15 +16,15 @@ class ChatViewController: UIViewController {
     let socketURL = NSURL(string:"http://chat.socket.io")!
     var username: String!
     lazy var socket: SocketIOChatClient = {
-        return SocketIOChatClient(socketURL: self.socketURL, username: self.username, timeout: 10, delegate: self, showLog: true)
+        return SocketIOChatClient(socketURL: self.socketURL, username: self.username, timeout: 10, delegate: self, showLog: false)
     }()
 
     //MARK: ViewController Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(socket.liveChatView)
-        socket.liveChatView.snp_makeConstraints { [unowned self] (make) -> Void in
-            make.edges.equalTo(self.view)
+        constrain(view, socket.liveChatView) { view, liveChatView in
+            liveChatView.edges == inset(view.edges, 0)
         }
         socket.connect()
     }
@@ -33,6 +33,9 @@ class ChatViewController: UIViewController {
         socket.disconnect()
     }
 
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        print("touchBegan")
+    }
 }
 
 extension ChatViewController: SocketIOChatClientDelegate {

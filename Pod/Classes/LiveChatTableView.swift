@@ -6,6 +6,8 @@
 //
 //
 
+import UIKit
+
 final class LiveChatTableView: UITableView {
     //MARK: Customizable Properties
     let fadeoutEventsScreenPortion = CGFloat(0.4)
@@ -26,7 +28,6 @@ final class LiveChatTableView: UITableView {
     }
     
     private func initTableView() {
-        scrollEnabled = false
         separatorStyle = .None
         backgroundColor = UIColor.clearColor()
         tableFooterView = UIView()
@@ -133,5 +134,36 @@ extension LiveChatTableView: UITableViewDataSource {
             return cell
         }
         
+    }
+}
+
+//MARK: Handle Touches
+extension LiveChatTableView {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if let superview = superview {
+            superview.touchesBegan(touches, withEvent: event)
+        }
+        super.touchesBegan(touches, withEvent: event)
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if let superview = superview {
+            superview.touchesEnded(touches, withEvent: event)
+        }
+        super.touchesEnded(touches, withEvent: event)
+    }
+    
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+        if let superview = superview {
+            superview.touchesCancelled(touches, withEvent: event)
+        }
+        super.touchesCancelled(touches, withEvent: event)
+    }
+    
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if let superview = superview {
+            superview.touchesMoved(touches, withEvent: event)
+        }
+        super.touchesMoved(touches, withEvent: event)
     }
 }

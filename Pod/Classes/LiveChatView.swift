@@ -6,21 +6,21 @@
 //
 //
 
-import SnapKit
+import Cartography
 
-public final class LiveChatView: UIView {
-    
+public final class LiveChatView: UIView {    
     //MARK: Init
     private weak var socket: SocketIOChatClient?
-    private weak var toolbarBottomConstraint: Constraint?
+    private weak var toolbarBottomConstraint: NSLayoutConstraint?
+
     private let tableView = LiveChatTableView()
     private lazy var toolbar: LiveChatToolbar = {
         return LiveChatToolbar(socket: self.socket!)
     }()
 
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: "keyboardWillChangeFrame:", object: nil)
-    }
+//    deinit {
+//        NSNotificationCenter.defaultCenter().removeObserver(self, name: "keyboardWillChangeFrame:", object: nil)
+//    }
     
     //MARK: Layout
     public convenience init(socket: SocketIOChatClient) {
@@ -35,26 +35,22 @@ public final class LiveChatView: UIView {
         addSubview(tableView)
         addSubview(toolbar)
         
-        tableView.snp_makeConstraints { [unowned self] (make) -> Void in
-            make.top.equalTo(0)
-            make.left.equalTo(0)
-            make.right.equalTo(self)
-            make.bottom.equalTo(self.toolbar.snp_top)
+        constrain(self, tableView, toolbar, gradientView) { view, tableView, toolbar, gradientView in
+            tableView.top == view.top
+            tableView.left == view.left
+            tableView.right == view.right
+            tableView.bottom == toolbar.top
+            
+            toolbar.left == view.left
+            toolbar.right == view.right
+            toolbarBottomConstraint = (toolbar.bottom == view.bottom)
+            
+            gradientView.left == view.left
+            gradientView.right == view.right
+            gradientView.height == toolbar.height * 2
+            gradientView.bottom == toolbar.bottom
         }
         
-        toolbar.snp_makeConstraints { [unowned self] (make) -> Void in
-            make.left.equalTo(0)
-            make.right.equalTo(self)
-            self.toolbarBottomConstraint = make.bottom.equalTo(self).constraint
-        }
-        
-        gradientView.snp_makeConstraints { [unowned self] (make) -> Void in
-            make.left.equalTo(0)
-            make.right.equalTo(self)
-            make.height.equalTo(self.toolbar).multipliedBy(2.0)
-            make.bottom.equalTo(self.toolbar)
-        }
-
         //Listen to keyboard change and user tap
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
         let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureHandler")
@@ -64,7 +60,7 @@ public final class LiveChatView: UIView {
     //MARK: Show and Hide Keyboard
     func keyboardWillChangeFrame(notification: NSNotification) {
         let endFrame = (notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        self.toolbarBottomConstraint?.updateOffset(-(CGRectGetHeight(self.bounds) - endFrame.origin.y))
+        toolbarBottomConstraint?.constant = -(CGRectGetHeight(self.bounds) - endFrame.origin.y)
         UIView.animateWithDuration(0.25) {
             self.layoutIfNeeded()
         }
