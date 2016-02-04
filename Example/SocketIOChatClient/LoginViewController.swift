@@ -16,7 +16,7 @@ class LoginViewController: UIViewController {
     //MARK: ViewController Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        textField.text = "Chaatz"
+        textField.text = "蒼老師"
     }
     
     override func viewDidAppear(animated: Bool) {

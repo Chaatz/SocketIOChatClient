@@ -18,9 +18,9 @@ public final class LiveChatView: UIView {
         return LiveChatToolbar(socket: self.socket!)
     }()
 
-//    deinit {
-//        NSNotificationCenter.defaultCenter().removeObserver(self, name: "keyboardWillChangeFrame:", object: nil)
-//    }
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "keyboardWillChangeFrame:", object: nil)
+    }
     
     //MARK: Layout
     public convenience init(socket: SocketIOChatClient) {
@@ -47,14 +47,17 @@ public final class LiveChatView: UIView {
             
             gradientView.left == view.left
             gradientView.right == view.right
-            gradientView.height == toolbar.height * 2
-            gradientView.bottom == toolbar.bottom
+            gradientView.height == toolbar.height + 88
+            gradientView.bottom == toolbar.bottom + 44
         }
         
         //Listen to keyboard change and user tap
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
         let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureHandler")
         tableView.addGestureRecognizer(tapGesture)
+        
+        //Listen to textfield size change
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "growingTextViewDidChangeSize:", name:"SocketIOChatClient_GrowingTextViewDidChangeSize", object: nil)
     }
     
     //MARK: Show and Hide Keyboard
@@ -67,7 +70,13 @@ public final class LiveChatView: UIView {
     }
     
     func tapGestureHandler() {
-        toolbar.textField.resignFirstResponder()
+        endEditing(true)
+    }
+
+    func growingTextViewDidChangeSize(notification: NSNotification) {
+        UIView.animateWithDuration(0.25) {
+            self.layoutIfNeeded()
+        }
     }
 
     //MARK: Events

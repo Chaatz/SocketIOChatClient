@@ -108,6 +108,7 @@
 		9BD99F97E6F2B3811B56343F3505577C /* World+DSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D8D406519113E01F488D84BC04C59F /* World+DSL.swift */; };
 		9DAA932A32E350EC01C6B8216945724A /* SocketStringReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091090D2CD8781E4A032F44A6A3C60DE /* SocketStringReader.swift */; };
 		9E7786C034F0E0A6B5F0A0E6BE7D7E4A /* BeEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B9609DBE758FD32EFB393B2421C38 /* BeEmpty.swift */; };
+		9F6F6A761C62F288005BF822 /* GrowingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6F6A751C62F288005BF822 /* GrowingTextView.swift */; };
 		A07E74FE66CBC5D88FA54F868D9E025D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09E5A76E0EE4DB1F2E892F3FB5312C2 /* Foundation.framework */; };
 		A80769C99C01B5415FB8EA544903CE1E /* World.h in Headers */ = {isa = PBXBuildFile; fileRef = 97C61964E623ED675F4296FD75F88DE0 /* World.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		AA8501741ABB8D75C6C47DE086BACD37 /* FBSnapshotTestController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0A573B49C1B91E8D1DB33B03B1C0EE4 /* FBSnapshotTestController.m */; };
@@ -430,6 +431,7 @@
 		9A769382B598DDB334A110549DC53065 /* Callsite.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Callsite.swift; path = Quick/Callsite.swift; sourceTree = "<group>"; };
 		9A801F587643B295530AA8E7B345BCD4 /* World+DSL.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "World+DSL.h"; path = "Quick/DSL/World+DSL.h"; sourceTree = "<group>"; };
 		9DF34A99CCE9DC4BA473540FF3F9263F /* SocketIOChatClient-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SocketIOChatClient-prefix.pch"; sourceTree = "<group>"; };
+		9F6F6A751C62F288005BF822 /* GrowingTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrowingTextView.swift; sourceTree = "<group>"; };
 		A117B4A11627F5D9370FDAD73A95911E /* SocketIOChatClient.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SocketIOChatClient.xcconfig; sourceTree = "<group>"; };
 		A294B811A9AE0B8122EC4A2D7096531F /* SocketEngineWebsocket.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SocketEngineWebsocket.swift; path = Source/SocketEngineWebsocket.swift; sourceTree = "<group>"; };
 		A5B076AA8AECEC6FA1F3199CA81D4FD4 /* Cartography-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Cartography-dummy.m"; sourceTree = "<group>"; };
@@ -820,6 +822,7 @@
 				115DECD397665049D686771F002ED84F /* LiveChatTableView.swift */,
 				8826747257568B61F99065F05986DD25 /* EventCell.swift */,
 				0373DE09404869FDB59C66D4EFFA48EC /* LiveChatToolbar.swift */,
+				9F6F6A751C62F288005BF822 /* GrowingTextView.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1579,6 +1582,7 @@
 				D36963E27206CDCA7B866F44526A5CB0 /* LiveChatToolbar.swift in Sources */,
 				1AB66DD48A60DC0E2471A66B1FCD64B5 /* LiveChatView.swift in Sources */,
 				C0A0BA7F63BBFB365D332340E3CE35E8 /* SocketIOChatClient-dummy.m in Sources */,
+				9F6F6A761C62F288005BF822 /* GrowingTextView.swift in Sources */,
 				E6989A2A9A714C70ADDFE74A4BC25A35 /* SocketIOChatClient.swift in Sources */,
 				44CEBF65BD440BEE427C8CA45300BEE4 /* SocketIOEvent.swift in Sources */,
 			);

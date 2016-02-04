@@ -12,14 +12,17 @@ final class LiveChatToolbar: UIView {
     //MARK: Init
     weak private var socket: SocketIOChatClient?
 
-    lazy var textField: TransparentTextField = {
-        let _textField = TransparentTextField(maxLength: (self.socket?.maxMessageLength)!)
-        _textField.delegate = self
-        _textField.font = UIFont.systemFontOfSize(15)
-        _textField.returnKeyType = .Send
-        return _textField
+    lazy var textView: GrowingTextView = {
+        let _textView = GrowingTextView()
+        _textView.delegate = self
+        _textView.returnKeyType = .Send
+        _textView.font = UIFont.systemFontOfSize(15)
+//        _textView.placeHolder.font = UIFont.systemFontOfSize(15)
+//        _textView.placeHolder.textColor = UIColor(white: 1.0, alpha: 0.5)
+//        _textView.placeHolder.text = "Say something..."
+        return _textView
     }()
-    
+        
     lazy var sendButton: UIButton = {
        let _button = UIButton(type: .System)
         _button.setTitle("Send", forState: .Normal)
@@ -40,7 +43,7 @@ final class LiveChatToolbar: UIView {
         line.backgroundColor = UIColor(white: 1.0, alpha: 0.5)
         
         addSubview(line)
-        addSubview(textField)
+        addSubview(textView)
         addSubview(sendButton)
         
         constrain(self, line) { view, line in
@@ -50,7 +53,7 @@ final class LiveChatToolbar: UIView {
             line.height == max(0.5, 1.0 / UIScreen.mainScreen().scale)
         }
         
-        constrain(self, sendButton, textField) { view, sendButton, textField in
+        constrain(self, sendButton, textView) { view, sendButton, textField in
             sendButton.top == view.top
             sendButton.bottom == view.bottom
             sendButton.right == view.right - 10
@@ -62,82 +65,35 @@ final class LiveChatToolbar: UIView {
         }
     }
     
-    override func intrinsicContentSize() -> CGSize {
-        return CGSize(width: UIViewNoIntrinsicMetric, height: 50.0)
-    }
-
     //MARK: Send/Receive Message
     func sendButtonTapped() {
-        guard let message = textField.text else { return }
+        guard let message = textView.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) else { return }
         if message.isEmpty { return }
         if socket?.sendMessage(message) == true{
-            textField.text = nil
+            textView.text = nil
 //        } else {
 //            let alertController = UIAlertController(title: "Network problem", message: "Please try again", preferredStyle: .Alert)
 //            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 //            presentViewController(alertController, animated: true, completion: nil)
         }
+        endEditing(true)
     }
 }
 
-//MARK: UITextFieldDelegate
-extension LiveChatToolbar: UITextFieldDelegate {
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        guard let _ = textField.text else { return false }
-        sendButtonTapped()
+extension LiveChatToolbar: UITextViewDelegate {
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            sendButtonTapped()
+            return false
+        }
         return true
     }
-}
-
-//MARK: TransparentTextField
-final class TransparentTextField: UITextField {
     
-    var maxLength = 140
-//    required init?(coder aDecoder: NSCoder) {
-//        super.init(coder: aDecoder)
-//        initTextField()
-//    }
-//    
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//        initTextField()
-//    }
-    
-    convenience init(maxLength: Int) {
-        self.init()
-        self.maxLength = maxLength
-        initTextField()
-    }
-    
-    func initTextField() {
-        borderStyle = .RoundedRect
-        backgroundColor = UIColor(white: 1.0, alpha: 0.3)
-        showPlaceholder(true)
-    }
-
-    override func becomeFirstResponder() -> Bool {
-        showPlaceholder(false)
-        UIView.animateWithDuration(0.25) { () -> Void in
-            self.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
-        }
-        return super.becomeFirstResponder()
-    }
-    
-    override func resignFirstResponder() -> Bool {
-        showPlaceholder(true)
-        if text?.isEmpty != false {
-            UIView.animateWithDuration(0.25) { () -> Void in
-                self.backgroundColor = UIColor(white: 1.0, alpha: 0.3)
-            }
-        }
-        return super.resignFirstResponder()
-    }
-    
-    private func showPlaceholder(show: Bool) {
-        if show {
-            attributedPlaceholder = NSAttributedString(string: "Say something...", attributes: [NSForegroundColorAttributeName:UIColor(white: 1.0, alpha: 0.5)])
-        } else {
-            placeholder = nil
+    func textViewDidChange(textView: UITextView) {
+        if textView.text.characters.count > 140 {
+            let endIndex = textView.text.startIndex.advancedBy(140)
+            textView.text = textView.text.substringToIndex(endIndex)
+            textView.undoManager?.removeAllActions()
         }
     }
 }
