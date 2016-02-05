@@ -10,30 +10,34 @@ import UIKit
 
 final class LiveChatTableView: UITableView {
     //MARK: Customizable Properties
-    let fadeoutEventsScreenPortion = CGFloat(0.4)
-    let minNumberOfEventsDisplay = 10
-    let fadeoutTimer = NSTimeInterval(10)
+    let eventCacheSize = 30
+    let visibleProportion = CGFloat(0.3)
+    let fadingDistance = CGFloat(100)
 
     //MARK: Init
     private var eventArray = [SocketIOEvent]()
+    private var screenHeight = max(UIScreen.mainScreen().bounds.size.height, UIScreen.mainScreen().bounds.size.width)
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        initTableView()
+        commonInit()
     }
     
     override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style)
-        initTableView()
+        commonInit()
     }
     
-    private func initTableView() {
+    private func commonInit() {
         separatorStyle = .None
         backgroundColor = UIColor.clearColor()
+        showsVerticalScrollIndicator = false
         tableFooterView = UIView()
         rowHeight = UITableViewAutomaticDimension
         estimatedRowHeight = 44.0
         dataSource = self
+        delegate = self
+        keyboardDismissMode = .Interactive
         
         let podBundle = NSBundle(forClass: self.classForCoder)
         if let bundleURL = podBundle.URLForResource("SocketIOChatClient", withExtension: "bundle") {
@@ -51,48 +55,19 @@ final class LiveChatTableView: UITableView {
     
     //MARK: Managing Events
     func appendEvent(event: SocketIOEvent) {
-        eventArray.insert(event, atIndex: 0)
-        beginUpdates()
+        self.beginUpdates()
+        
+        if self.eventArray.count > self.eventCacheSize {
+            self.eventArray.removeLast()
+            let indexPath = NSIndexPath(forRow: self.eventArray.count, inSection: 0)
+            self.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        }
+        
+        self.eventArray.insert(event, atIndex: 0)
         let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-        insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
-        endUpdates()
+        self.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
         
-        // Delete cells that moved out of the screen
-        deleteInvisibleEvents()
-
-        // Fadeout cells that reach the top half of the screen, but always keep first 4 rows
-        fadeoutExpiredEvents()
-    }
-    
-    private func deleteInvisibleEvents() {
-        guard let lastVisibleRow = indexPathsForVisibleRows?.last?.row else { return }
-        
-        // Keep 1 more page incase when device rotate or keyboard show/hide
-        let lastRow = numberOfRowsInSection(0) / 2
-        
-        if lastRow > lastVisibleRow {
-            beginUpdates()
-            for row in lastVisibleRow+1 ... lastRow {
-                self.eventArray.removeLast()
-                let indexPath = NSIndexPath(forRow: row, inSection: 0)
-                deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-            }
-            endUpdates()
-        }
-    }
-
-    private func fadeoutExpiredEvents() {
-        let fadeoutPoint = bounds.size.height * fadeoutEventsScreenPortion
-        for cell in visibleCells as! [EventCell] {
-            if let row = indexPathForCell(cell)?.row {
-                if row >= minNumberOfEventsDisplay && cell.frame.origin.y > fadeoutPoint {
-                    if eventArray[row].expire == SocketIOEvent.Expire.Waiting {
-                        eventArray[row].expire = SocketIOEvent.Expire.Immediately
-                        cell.fadeout()
-                    }
-                }
-            }
-        }
+        self.endUpdates()
     }
 }
 
@@ -112,28 +87,51 @@ extension LiveChatTableView: UITableViewDataSource {
         switch event.type {
         case .NewMessage:
             let cell = tableView.dequeueReusableCellWithIdentifier("MessageCell", forIndexPath: indexPath) as! MessageCell
+            cell.delegate = self
             cell.event = eventArray[indexPath.row]
-            if eventArray[indexPath.row].expire == .Immediately {
-                cell.alpha = 0.0
-            }
-            if eventArray[indexPath.row].expire == .None {
-                eventArray[indexPath.row].expire = .Waiting
-                cell.startFadeoutTimer(fadeoutTimer)
-            }
             return cell
         case .UserJoined, .UserLeft, .Login:
             let cell = tableView.dequeueReusableCellWithIdentifier("UserJoinCell", forIndexPath: indexPath) as! UserJoinCell
+            cell.delegate = self
             cell.event = eventArray[indexPath.row]
-            if eventArray[indexPath.row].expire == .Immediately {
-                cell.alpha = 0.0
-            }
-            if eventArray[indexPath.row].expire == .None {
-                eventArray[indexPath.row].expire = .Waiting
-                cell.startFadeoutTimer(fadeoutTimer)
-            }
             return cell
         }
-        
+    }
+}
+
+extension LiveChatTableView: UITableViewDelegate {
+//    func scrollViewDidScroll(scrollView: UIScrollView) {
+//        let visiblePos = screenHeight * visibleProportion
+//        for cell in visibleCells as! [EventCell] {
+//            let cellPos = convertPoint(cell.frame.origin, toView: self).y - contentOffset.y
+//            if cellPos <= visiblePos {
+//                cell.contentView.alpha = 1.0
+//            } else if cellPos < visiblePos + fadingDistance {
+//                cell.contentView.alpha = 1.0 - ((cellPos - visiblePos) / fadingDistance)
+//            } else {
+//                cell.contentView.alpha = 0.0
+//            }
+//        }
+//    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        for cell in visibleCells as! [EventCell] {
+            cell.alpha = alphaForCellAtFrame(cell.frame)
+        }
+    }
+}
+
+extension LiveChatTableView: EventCellDelegate {
+    func alphaForCellAtFrame(frame: CGRect) -> CGFloat {
+        let visiblePos = screenHeight * visibleProportion
+        let cellPos = frame.origin.y - contentOffset.y
+        if cellPos <= visiblePos {
+            return 1.0
+        } else if cellPos < visiblePos + fadingDistance {
+            return 1.0 - ((cellPos - visiblePos) / fadingDistance)
+        } else {
+            return 0.0
+        }
     }
 }
 

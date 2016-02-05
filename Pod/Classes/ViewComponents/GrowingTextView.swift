@@ -11,6 +11,8 @@ import Cartography
 
 class GrowingTextView: UITextView {
     private weak var heightConstraint: NSLayoutConstraint?
+
+    //MARK: Customizable properties
     var activeBackgroundColor: UIColor? {
         didSet {
             if isFirstResponder() {
@@ -62,7 +64,7 @@ class GrowingTextView: UITextView {
     override func becomeFirstResponder() -> Bool {
         setNeedsDisplay()
         if let color = activeBackgroundColor {
-            UIView.animateWithDuration(0.25) { () -> Void in
+            UIView.animateWithDuration(2.5) { () -> Void in
                 self.backgroundColor = color
             }
         }
@@ -74,7 +76,7 @@ class GrowingTextView: UITextView {
         if text?.isEmpty != false {
             setNeedsDisplay()
             if let color = deactiveBackgroundColor {
-                UIView.animateWithDuration(0.25) { () -> Void in
+                UIView.animateWithDuration(2.5) { () -> Void in
                     self.backgroundColor = color
                 }
             }

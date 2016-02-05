@@ -6,35 +6,38 @@
 //
 //
 
+protocol EventCellDelegate: class {
+    func alphaForCellAtFrame(frame: CGRect) -> CGFloat
+}
+
 //MARK: Base Cell Class
 class EventCell: UITableViewCell {
-    private var timer: NSTimer?
-    private var didFadeout = false
     @IBOutlet private weak var bubbleView: UIView!
+    weak var delegate: EventCellDelegate?
 
     override func awakeFromNib() {
         backgroundColor = UIColor.clearColor()
         transform = CGAffineTransformMakeScale (1,-1);
         bubbleView.layer.cornerRadius = 4.0
         bubbleView.clipsToBounds = true
+        addObserver(self, forKeyPath: "frame", options: .New, context: nil)
     }
-
+    
     deinit {
-        timer?.invalidate()
+        removeObserver(self, forKeyPath: "frame")
     }
     
-    func startFadeoutTimer(fadeoutAfter: NSTimeInterval) {
-        timer?.invalidate()
-        didFadeout = false
-        contentView.alpha = 0.9
-        timer = NSTimer.scheduledTimerWithTimeInterval(fadeoutAfter, target: self, selector: "fadeout", userInfo: nil, repeats: false)
-    }
-    
-    func fadeout() {
-        timer?.invalidate()
-        didFadeout = true
-        UIView.animateWithDuration(1.5) { () -> Void in
-            self.contentView.alpha = 0.0
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        guard let keyPath = keyPath else { return }
+        switch keyPath {
+        case "frame":
+            if let alpha = delegate?.alphaForCellAtFrame(frame) {
+                self.alpha = alpha
+            } else {
+                alpha = 1.0
+            }
+        default:
+            break
         }
     }
 }
@@ -46,6 +49,7 @@ final class MessageCell: EventCell {
     @IBOutlet private weak var iconView: UIImageView!
     var event: SocketIOEvent? {
         didSet {
+            bubbleView.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
             iconView?.backgroundColor = UIColor.orangeColor()
             if let event = event {
                 nameLabel.text = "@" + event.username
@@ -63,7 +67,7 @@ final class UserJoinCell: EventCell {
     @IBOutlet private weak var eventLabel: UILabel!
     var event: SocketIOEvent? {
         didSet {
-            bubbleView.backgroundColor = UIColor(white: 0.8, alpha: 1.0)
+            bubbleView.backgroundColor = UIColor(white: 0.8, alpha: 0.9)
             if let event = event {
                 switch event.type {
                 case .UserJoined, .Login:

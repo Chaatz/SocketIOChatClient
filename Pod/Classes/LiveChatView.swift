@@ -12,7 +12,6 @@ public final class LiveChatView: UIView {
     //MARK: Init
     private weak var socket: SocketIOChatClient?
     private weak var toolbarBottomConstraint: NSLayoutConstraint?
-
     private let tableView = LiveChatTableView()
     private lazy var toolbar: LiveChatToolbar = {
         return LiveChatToolbar(socket: self.socket!)
@@ -28,7 +27,11 @@ public final class LiveChatView: UIView {
         self.socket = socket
         clipsToBounds = true
         backgroundColor = UIColor.clearColor()
-        let gradientView = GradientView()
+
+        let colorTop = UIColor(white: 0.0, alpha: 0.0).CGColor
+        let colorBottom = UIColor(white: 0.0, alpha: 0.6).CGColor
+        let locations = [0.0, 1.0]
+        let gradientView = GradientView(colors: [colorTop, colorBottom], locations: locations)
         
         //Add Subviews
         addSubview(gradientView)
@@ -74,9 +77,9 @@ public final class LiveChatView: UIView {
     }
 
     func growingTextViewDidChangeSize(notification: NSNotification) {
-        UIView.animateWithDuration(0.25) {
+        UIView.animateWithDuration(0.3, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: [.CurveLinear], animations: { () -> Void in
             self.layoutIfNeeded()
-        }
+            }, completion: nil)
     }
 
     //MARK: Events
@@ -90,33 +93,5 @@ public final class LiveChatView: UIView {
 //        default:
 //            break
 //        }
-    }
-}
-
-class GradientView: UIView {
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        backgroundColor = UIColor.clearColor()
-        layer.insertSublayer(gradientLayer, atIndex: 0)
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = UIColor.clearColor()
-        layer.insertSublayer(gradientLayer, atIndex: 0)
-    }
-    
-    private let gradientLayer: CAGradientLayer = {
-        let colorTop = UIColor(white: 0.0, alpha: 0.0).CGColor
-        let colorBottom = UIColor(white: 0.0, alpha: 0.4).CGColor
-        let _gradientLayer = CAGradientLayer()
-        _gradientLayer.colors = [ colorTop, colorBottom]
-        _gradientLayer.locations = [ 0.0, 1.0]
-        return _gradientLayer
-    }()
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        gradientLayer.frame = bounds
     }
 }

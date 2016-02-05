@@ -33,9 +33,9 @@ class ChatViewController: UIViewController {
         socket.disconnect()
     }
 
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        print("touchBegan")
-    }
+//    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//        print("touchBegan")
+//    }
 }
 
 extension ChatViewController: SocketIOChatClientDelegate {

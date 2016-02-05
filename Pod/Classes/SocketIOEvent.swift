@@ -7,11 +7,6 @@
 //
 
 public struct SocketIOEvent {
-    enum Expire {
-        case None
-        case Waiting
-        case Immediately
-    }
     public enum Type {
         case Login
         case UserJoined
@@ -22,7 +17,6 @@ public struct SocketIOEvent {
     public var username: String
     public var message: String?
     public var userCount: Int?
-    var expire = Expire.None
     
     //MARK: For all incoming events
     init?(dict: AnyObject?, type: Type) {

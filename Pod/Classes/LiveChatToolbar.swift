@@ -21,6 +21,8 @@ final class LiveChatToolbar: UIView {
         _textView.deactiveBackgroundColor = UIColor(white: 1.0, alpha: 0.2)
         _textView.placeHolder = "Say something..."
         _textView.placeHolderColor = UIColor(white: 1.0, alpha: 0.5)
+        _textView.keyboardDismissMode = .Interactive
+        _textView.keyboardAppearance = .Dark
         return _textView
     }()
         
@@ -47,14 +49,12 @@ final class LiveChatToolbar: UIView {
         addSubview(textView)
         addSubview(sendButton)
         
-        constrain(self, line) { view, line in
+        constrain(self, sendButton, textView, line) { view, sendButton, textField, line in
             line.top == view.top
             line.left == view.left + 10
             line.right == view.right - 10
             line.height == max(0.5, 1.0 / UIScreen.mainScreen().scale)
-        }
-        
-        constrain(self, sendButton, textView) { view, sendButton, textField in
+
             sendButton.top == view.top
             sendButton.bottom == view.bottom
             sendButton.right == view.right - 10
@@ -77,10 +77,11 @@ final class LiveChatToolbar: UIView {
 //            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 //            presentViewController(alertController, animated: true, completion: nil)
         }
-        endEditing(true)
+//        endEditing(true)
     }
 }
 
+//MARK: UITextViewDelegate (Press Enter, Characters Limit)
 extension LiveChatToolbar: UITextViewDelegate {
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
