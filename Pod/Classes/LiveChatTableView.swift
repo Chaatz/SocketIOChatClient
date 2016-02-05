@@ -10,7 +10,7 @@ import UIKit
 
 final class LiveChatTableView: UITableView {
     //MARK: Customizable Properties
-    let eventCacheSize = 30
+    let eventCacheSize = 100
     let visibleProportion = CGFloat(0.3)
     let fadingDistance = CGFloat(100)
 
@@ -55,19 +55,26 @@ final class LiveChatTableView: UITableView {
     
     //MARK: Managing Events
     func appendEvent(event: SocketIOEvent) {
+//        let currentOffset = contentOffset
+        print("before: \(contentOffset.y)")
+        
         self.beginUpdates()
         
         if self.eventArray.count > self.eventCacheSize {
             self.eventArray.removeLast()
             let indexPath = NSIndexPath(forRow: self.eventArray.count, inSection: 0)
-            self.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            self.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
         }
         
         self.eventArray.insert(event, atIndex: 0)
         let indexPath = NSIndexPath(forRow: 0, inSection: 0)
         self.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
         
+//        setContentOffset(currentOffset, animated: true)
+
         self.endUpdates()
+        
+        print("after: \(contentOffset.y)")
     }
 }
 
