@@ -19,7 +19,7 @@ public final class LiveChatView: UIView {
     }()
 
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: "keyboardWillChangeFrame:", object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     //MARK: Layout

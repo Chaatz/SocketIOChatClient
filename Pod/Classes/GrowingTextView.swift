@@ -11,33 +11,40 @@ import Cartography
 
 class GrowingTextView: UITextView {
     private weak var heightConstraint: NSLayoutConstraint?
-//    var placeHolder: UILabel = UILabel()
-    let activeBackgroundColor = UIColor(white: 1.0, alpha: 0.9)
-    let deactiveBackgroundColor = UIColor(white: 1.0, alpha: 0.2)
-    var shouldShowPlaceHolder = true
-    
-    override init(frame: CGRect, textContainer: NSTextContainer?) {
-        super.init(frame: frame, textContainer: textContainer)
-        commonInit()
+    var activeBackgroundColor: UIColor? {
+        didSet {
+            if isFirstResponder() {
+                backgroundColor = activeBackgroundColor
+            }
+        }
+    }
+    var deactiveBackgroundColor: UIColor? {
+        didSet {
+            if !isFirstResponder() {
+                backgroundColor = deactiveBackgroundColor
+            }
+        }
+    }
+    var placeHolder: NSString? {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    var placeHolderColor: UIColor? {
+        didSet {
+            setNeedsDisplay()
+        }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonInit()
-    }
-    
-    private func commonInit() {
+    //MARK: Override functions
+    override func willMoveToSuperview(newSuperview: UIView?) {
+        super.willMoveToSuperview(newSuperview)
         layer.cornerRadius = 4.0
-        backgroundColor = deactiveBackgroundColor
-//        addSubview(placeHolder)
-//        constrain(self, placeHolder) { view, placeHolder in
-//            placeHolder.left == view.left + 4
-//            placeHolder.center == view.center
-//        }
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
+        setNeedsDisplay()
         let size = sizeThatFits(CGSizeMake(bounds.size.width, CGFloat.max))
         
         if (heightConstraint == nil) {
@@ -53,10 +60,11 @@ class GrowingTextView: UITextView {
     }
     
     override func becomeFirstResponder() -> Bool {
-//        placeHolder.hidden = true
-        showPlaceHolder(false)
-        UIView.animateWithDuration(0.25) { () -> Void in
-            self.backgroundColor = self.activeBackgroundColor
+        setNeedsDisplay()
+        if let color = activeBackgroundColor {
+            UIView.animateWithDuration(0.25) { () -> Void in
+                self.backgroundColor = color
+            }
         }
         return super.becomeFirstResponder()
     }
@@ -64,23 +72,21 @@ class GrowingTextView: UITextView {
     override func resignFirstResponder() -> Bool {
         text = text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         if text?.isEmpty != false {
-            UIView.animateWithDuration(0.25) { () -> Void in
-                self.backgroundColor = self.deactiveBackgroundColor
+            setNeedsDisplay()
+            if let color = deactiveBackgroundColor {
+                UIView.animateWithDuration(0.25) { () -> Void in
+                    self.backgroundColor = color
+                }
             }
-//            placeHolder.hidden = false
-            showPlaceHolder(true)
         }
         return super.resignFirstResponder()
     }
     
-    private func showPlaceHolder(show: Bool) {
-        shouldShowPlaceHolder = show
-        setNeedsDisplay()
-    }
-    
     override func drawRect(rect: CGRect) {
         super.drawRect(rect)
-        if shouldShowPlaceHolder {
+        guard let placeHolder = placeHolder else { return }
+        guard let placeHolderColor = placeHolderColor else { return }
+        if !isFirstResponder() && text?.isEmpty != false {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = textAlignment
             
@@ -89,48 +95,12 @@ class GrowingTextView: UITextView {
                 self.frame.size.width - textContainerInset.left - textContainerInset.right,
                 self.frame.size.height)
             
-            NSString(string: "Say something...").drawInRect(rect, withAttributes: [
-                NSFontAttributeName: UIFont.systemFontOfSize(15),
-                NSForegroundColorAttributeName: UIColor(white: 1.0, alpha: 0.5),
+            let attributes = [
+                NSFontAttributeName: font!,
+                NSForegroundColorAttributeName: placeHolderColor,
                 NSParagraphStyleAttributeName: paragraphStyle
-                ])
+            ]
+            placeHolder.drawInRect(rect, withAttributes: attributes)
         }
-        
     }
 }
-
-//- (void)drawRect:(CGRect)rect {
-//    [super drawRect:rect];
-//    
-//    if (self.shouldDisplayPlaceholder && self.placeholder && self.placeholderColor) {
-//        
-//        UIEdgeInsets inset = self.contentInset;
-//        
-//        if ([self respondsToSelector:@selector(textContainerInset)]) {
-//            inset = self.textContainerInset;
-//        }
-//        
-//        if ([self respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)]) {
-//            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-//            paragraphStyle.alignment = self.textAlignment;
-//            [self.placeholder drawInRect:CGRectMake(inset.left + 5,
-//            inset.top,
-//            self.frame.size.width - inset.left - inset.right,
-//            self.frame.size.height)
-//            withAttributes:@{NSFontAttributeName:self.font,
-//            NSForegroundColorAttributeName:self.placeholderColor,
-//            NSParagraphStyleAttributeName:paragraphStyle}];
-//        }
-//        else {
-//            // iOS 6
-//            /*
-//            [self.placeholderColor set];
-//            [self.placeholder drawInRect:CGRectMake(8.0f,
-//            8.0f,
-//            self.frame.size.width - 16.0f,
-//            self.frame.size.height)
-//            withFont:self.font];
-//            */
-//        }
-//    }
-//}

@@ -12,18 +12,19 @@ final class LiveChatToolbar: UIView {
     //MARK: Init
     weak private var socket: SocketIOChatClient?
 
-    lazy var textView: GrowingTextView = {
+    lazy private var textView: GrowingTextView = {
         let _textView = GrowingTextView()
         _textView.delegate = self
         _textView.returnKeyType = .Send
         _textView.font = UIFont.systemFontOfSize(15)
-//        _textView.placeHolder.font = UIFont.systemFontOfSize(15)
-//        _textView.placeHolder.textColor = UIColor(white: 1.0, alpha: 0.5)
-//        _textView.placeHolder.text = "Say something..."
+        _textView.activeBackgroundColor = UIColor(white: 1.0, alpha: 0.9)
+        _textView.deactiveBackgroundColor = UIColor(white: 1.0, alpha: 0.2)
+        _textView.placeHolder = "Say something..."
+        _textView.placeHolderColor = UIColor(white: 1.0, alpha: 0.5)
         return _textView
     }()
         
-    lazy var sendButton: UIButton = {
+    lazy private var sendButton: UIButton = {
        let _button = UIButton(type: .System)
         _button.setTitle("Send", forState: .Normal)
         _button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
