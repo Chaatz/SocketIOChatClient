@@ -55,9 +55,6 @@ final class LiveChatTableView: UITableView {
     
     //MARK: Managing Events
     func appendEvent(event: SocketIOEvent) {
-//        let currentOffset = contentOffset
-        print("before: \(contentOffset.y)")
-        
         self.beginUpdates()
         
         if self.eventArray.count > self.eventCacheSize {
@@ -69,12 +66,8 @@ final class LiveChatTableView: UITableView {
         self.eventArray.insert(event, atIndex: 0)
         let indexPath = NSIndexPath(forRow: 0, inSection: 0)
         self.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
-        
-//        setContentOffset(currentOffset, animated: true)
 
         self.endUpdates()
-        
-        print("after: \(contentOffset.y)")
     }
 }
 
@@ -107,31 +100,17 @@ extension LiveChatTableView: UITableViewDataSource {
 }
 
 extension LiveChatTableView: UITableViewDelegate {
-//    func scrollViewDidScroll(scrollView: UIScrollView) {
-//        let visiblePos = screenHeight * visibleProportion
-//        for cell in visibleCells as! [EventCell] {
-//            let cellPos = convertPoint(cell.frame.origin, toView: self).y - contentOffset.y
-//            if cellPos <= visiblePos {
-//                cell.contentView.alpha = 1.0
-//            } else if cellPos < visiblePos + fadingDistance {
-//                cell.contentView.alpha = 1.0 - ((cellPos - visiblePos) / fadingDistance)
-//            } else {
-//                cell.contentView.alpha = 0.0
-//            }
-//        }
-//    }
-    
     func scrollViewDidScroll(scrollView: UIScrollView) {
         for cell in visibleCells as! [EventCell] {
-            cell.alpha = alphaForCellAtFrame(cell.frame)
+            cell.alpha = alphaForCell(cell)
         }
     }
 }
 
 extension LiveChatTableView: EventCellDelegate {
-    func alphaForCellAtFrame(frame: CGRect) -> CGFloat {
+    func alphaForCell(cell: EventCell) -> CGFloat {
         let visiblePos = screenHeight * visibleProportion
-        let cellPos = frame.origin.y - contentOffset.y
+        let cellPos = cell.frame.origin.y - contentOffset.y - contentInset.top
         if cellPos <= visiblePos {
             return 1.0
         } else if cellPos < visiblePos + fadingDistance {

@@ -9,8 +9,13 @@
 import UIKit
 import Cartography
 
+protocol GrowingTextViewDelegate: class {
+    func growingTextViewDidChangeHeight(height: CGFloat)
+}
+
 class GrowingTextView: UITextView {
     private weak var heightConstraint: NSLayoutConstraint?
+    weak var growingDelegate: GrowingTextViewDelegate?
 
     //MARK: Customizable properties
     var activeBackgroundColor: UIColor? {
@@ -56,7 +61,7 @@ class GrowingTextView: UITextView {
         
         if size.height != heightConstraint?.constant {
             heightConstraint!.constant = size.height;
-            NSNotificationCenter.defaultCenter().postNotificationName("SocketIOChatClient_GrowingTextViewDidChangeSize", object: nil)
+            growingDelegate?.growingTextViewDidChangeHeight(size.height)
             scrollRangeToVisible(NSMakeRange(0, 0))
         }
     }
@@ -64,9 +69,9 @@ class GrowingTextView: UITextView {
     override func becomeFirstResponder() -> Bool {
         setNeedsDisplay()
         if let color = activeBackgroundColor {
-            UIView.animateWithDuration(2.5) { () -> Void in
+//            UIView.animateWithDuration(2.5) { () -> Void in
                 self.backgroundColor = color
-            }
+//            }
         }
         return super.becomeFirstResponder()
     }
@@ -76,9 +81,9 @@ class GrowingTextView: UITextView {
         if text?.isEmpty != false {
             setNeedsDisplay()
             if let color = deactiveBackgroundColor {
-                UIView.animateWithDuration(2.5) { () -> Void in
+//                UIView.animateWithDuration(2.5) { () -> Void in
                     self.backgroundColor = color
-                }
+//                }
             }
         }
         return super.resignFirstResponder()

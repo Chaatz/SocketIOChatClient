@@ -10,11 +10,13 @@ import Cartography
 
 final class LiveChatToolbar: UIView {
     //MARK: Init
-    weak private var socket: SocketIOChatClient?
+    private weak var socket: SocketIOChatClient?
+    private weak var heightConstraint: NSLayoutConstraint?
 
     lazy private var textView: GrowingTextView = {
         let _textView = GrowingTextView()
         _textView.delegate = self
+        _textView.growingDelegate = self
         _textView.returnKeyType = .Send
         _textView.font = UIFont.systemFontOfSize(15)
         _textView.activeBackgroundColor = UIColor(white: 1.0, alpha: 0.9)
@@ -38,18 +40,26 @@ final class LiveChatToolbar: UIView {
     
     //MARK: Layout
     convenience init(socket: SocketIOChatClient) {
-        self.init()
+        self.init(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.size.width, height: 50))
         self.socket = socket
 
         backgroundColor = UIColor.clearColor()
         let line = UIView()
         line.backgroundColor = UIColor(white: 1.0, alpha: 0.5)
         
+        let colorTop = UIColor(white: 0.0, alpha: 0.0).CGColor
+        let colorBottom = UIColor(white: 0.0, alpha: 0.6).CGColor
+        let locations = [0.0, 1.0]
+        let gradientView = GradientView(colors: [colorTop, colorBottom], locations: locations)
+
+        addSubview(gradientView)
         addSubview(line)
         addSubview(textView)
         addSubview(sendButton)
         
-        constrain(self, sendButton, textView, line) { view, sendButton, textField, line in
+        constrain(self, sendButton, textView, line, gradientView) { view, sendButton, textView, line, gradientView in
+            gradientView.edges == inset(view.edges, -20, 0, -44, 0)
+            
             line.top == view.top
             line.left == view.left + 10
             line.right == view.right - 10
@@ -59,13 +69,19 @@ final class LiveChatToolbar: UIView {
             sendButton.bottom == view.bottom
             sendButton.right == view.right - 10
             
-            textField.left == view.left + 10
-            textField.right == sendButton.left - 10
-            textField.top == view.top + 8
-            textField.bottom == view.bottom - 8
+            textView.left == view.left + 10
+            textView.right == sendButton.left - 10
+            textView.centerY == view.centerY
         }
     }
     
+    override func addConstraint(constraint: NSLayoutConstraint) {
+        if constraint.firstItem === self {
+            self.heightConstraint = constraint
+        }
+        super.addConstraint(constraint)
+    }
+
     //MARK: Send/Receive Message
     func sendButtonTapped() {
         guard let message = textView.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) else { return }
@@ -96,6 +112,19 @@ extension LiveChatToolbar: UITextViewDelegate {
             let endIndex = textView.text.startIndex.advancedBy(140)
             textView.text = textView.text.substringToIndex(endIndex)
             textView.undoManager?.removeAllActions()
+        }
+    }
+}
+
+extension LiveChatToolbar: GrowingTextViewDelegate {
+    func growingTextViewDidChangeHeight(height: CGFloat) {
+        if let heightConstraint = heightConstraint {
+            heightConstraint.constant = height + 16
+            UIView.animateWithDuration(0.3, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: [.CurveLinear], animations: { () -> Void in
+//                print("super:\(self.superview!)")
+//                print("super.super:\(self.superview!.superview!)")
+                self.superview?.layoutIfNeeded()
+                }, completion: nil)
         }
     }
 }

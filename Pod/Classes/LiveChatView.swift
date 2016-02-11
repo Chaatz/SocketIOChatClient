@@ -7,14 +7,15 @@
 //
 
 import Cartography
+import UIKit
 
 public final class LiveChatView: UIView {    
     //MARK: Init
     private weak var socket: SocketIOChatClient?
-    private weak var toolbarBottomConstraint: NSLayoutConstraint?
     private let tableView = LiveChatTableView()
     private lazy var toolbar: LiveChatToolbar = {
-        return LiveChatToolbar(socket: self.socket!)
+        let _toolbar = LiveChatToolbar(socket: self.socket!)
+        return _toolbar
     }()
 
     deinit {
@@ -28,60 +29,51 @@ public final class LiveChatView: UIView {
         clipsToBounds = true
         backgroundColor = UIColor.clearColor()
 
-        let colorTop = UIColor(white: 0.0, alpha: 0.0).CGColor
-        let colorBottom = UIColor(white: 0.0, alpha: 0.6).CGColor
-        let locations = [0.0, 1.0]
-        let gradientView = GradientView(colors: [colorTop, colorBottom], locations: locations)
-        
         //Add Subviews
-        addSubview(gradientView)
         addSubview(tableView)
-        addSubview(toolbar)
-        
-        constrain(self, tableView, toolbar, gradientView) { view, tableView, toolbar, gradientView in
-            tableView.top == view.top
-            tableView.left == view.left
-            tableView.right == view.right
-            tableView.bottom == toolbar.top
-            
-            toolbar.left == view.left
-            toolbar.right == view.right
-            toolbarBottomConstraint = (toolbar.bottom == view.bottom)
-            
-            gradientView.left == view.left
-            gradientView.right == view.right
-            gradientView.height == toolbar.height + 88
-            gradientView.bottom == toolbar.bottom + 44
+        constrain(self, tableView) { view, tableView in
+            tableView.edges == inset(view.edges, 0)
         }
-        
+
         //Listen to keyboard change and user tap
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidChangeFrame:", name: UIKeyboardDidChangeFrameNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
         let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureHandler")
         tableView.addGestureRecognizer(tapGesture)
-        
-        //Listen to textfield size change
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "growingTextViewDidChangeSize:", name:"SocketIOChatClient_GrowingTextViewDidChangeSize", object: nil)
+
+        becomeFirstResponder()
+
+        tableView.contentInset = UIEdgeInsets(top: toolbar.bounds.size.height, left: 0, bottom: 0, right: 0)
     }
     
-    //MARK: Show and Hide Keyboard
-    func keyboardWillChangeFrame(notification: NSNotification) {
-        let endFrame = (notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        toolbarBottomConstraint?.constant = -(CGRectGetHeight(self.bounds) - endFrame.origin.y)
-        UIView.animateWithDuration(0.25) {
-            self.layoutIfNeeded()
-        }
+    //MARK: Keyboard
+    public override func canBecomeFirstResponder() -> Bool {
+        return true
     }
     
+    override public var inputAccessoryView: UIView {
+        return toolbar
+    }
+
     func tapGestureHandler() {
-        endEditing(true)
+        self.becomeFirstResponder()
     }
 
-    func growingTextViewDidChangeSize(notification: NSNotification) {
-        UIView.animateWithDuration(0.3, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: [.CurveLinear], animations: { () -> Void in
-            self.layoutIfNeeded()
-            }, completion: nil)
+    func keyboardDidChangeFrame(notification: NSNotification) {
+        print("keyboardDidChangeFrame")
     }
 
+    func keyboardWillChangeFrame(notification: NSNotification) {
+        if bounds.size.height == 0 { return }
+        let endFrame = (notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+
+//        let oldInset = tableView.contentInset.top
+        let newInset = bounds.size.height - endFrame.origin.y
+//        let newOffset = tableView.contentOffset.y - (newInset - oldInset)
+//        tableView.contentOffset = CGPoint(x: 0, y: newOffset)
+        tableView.contentInset = UIEdgeInsets(top: newInset, left: 0, bottom: 0, right: 0)
+    }
+    
     //MARK: Events
     func appendEvent(event: SocketIOEvent) {
         tableView.appendEvent(event)

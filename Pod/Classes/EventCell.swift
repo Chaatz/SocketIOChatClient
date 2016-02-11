@@ -7,7 +7,7 @@
 //
 
 protocol EventCellDelegate: class {
-    func alphaForCellAtFrame(frame: CGRect) -> CGFloat
+    func alphaForCell(cell: EventCell) -> CGFloat
 }
 
 //MARK: Base Cell Class
@@ -31,7 +31,7 @@ class EventCell: UITableViewCell {
         guard let keyPath = keyPath else { return }
         switch keyPath {
         case "frame":
-            if let alpha = delegate?.alphaForCellAtFrame(frame) {
+            if let alpha = delegate?.alphaForCell(self) {
                 self.alpha = alpha
             } else {
                 alpha = 1.0
