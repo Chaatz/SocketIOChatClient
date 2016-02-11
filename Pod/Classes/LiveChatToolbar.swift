@@ -8,10 +8,16 @@
 
 import Cartography
 
+protocol LiveChatToolbarDelegate {
+    func liveChatToolbarDidChangePosition(positionY: CGFloat)
+}
+
 final class LiveChatToolbar: UIView {
     //MARK: Init
     private weak var socket: SocketIOChatClient?
     private weak var heightConstraint: NSLayoutConstraint?
+    private var centerContext = 0
+    var delegate: LiveChatToolbarDelegate?
 
     lazy private var textView: GrowingTextView = {
         let _textView = GrowingTextView()
@@ -75,6 +81,16 @@ final class LiveChatToolbar: UIView {
         }
     }
     
+    override func willMoveToSuperview(newSuperview: UIView?) {
+        super.willMoveToSuperview(newSuperview)
+        guard let newSuperview = newSuperview else {
+            self.superview?.removeObserver(self, forKeyPath: "center")
+            return
+        }
+        let options = NSKeyValueObservingOptions([.New, .Old])
+        newSuperview.addObserver(self, forKeyPath: "center", options: options, context: &centerContext)
+    }
+
     override func addConstraint(constraint: NSLayoutConstraint) {
         if constraint.firstItem === self {
             self.heightConstraint = constraint
@@ -94,6 +110,18 @@ final class LiveChatToolbar: UIView {
 //            presentViewController(alertController, animated: true, completion: nil)
         }
 //        endEditing(true)
+    }
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if context == &centerContext {
+            guard let superViewFrame = superview?.frame else {
+                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+                return
+            }
+            delegate?.liveChatToolbarDidChangePosition(superViewFrame.origin.y)
+        } else {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
     }
 }
 

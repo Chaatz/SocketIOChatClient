@@ -36,7 +36,7 @@ final class LiveChatTableView: UITableView {
         rowHeight = UITableViewAutomaticDimension
         estimatedRowHeight = 44.0
         dataSource = self
-        delegate = self
+//        delegate = self
         keyboardDismissMode = .Interactive
         
         let podBundle = NSBundle(forClass: self.classForCoder)
@@ -99,13 +99,13 @@ extension LiveChatTableView: UITableViewDataSource {
     }
 }
 
-extension LiveChatTableView: UITableViewDelegate {
-    func scrollViewDidScroll(scrollView: UIScrollView) {
-        for cell in visibleCells as! [EventCell] {
-            cell.alpha = alphaForCell(cell)
-        }
-    }
-}
+//extension LiveChatTableView: UITableViewDelegate {
+//    func scrollViewDidScroll(scrollView: UIScrollView) {
+//        for cell in visibleCells as! [EventCell] {
+//            cell.alpha = alphaForCell(cell)
+//        }
+//    }
+//}
 
 extension LiveChatTableView: EventCellDelegate {
     func alphaForCell(cell: EventCell) -> CGFloat {

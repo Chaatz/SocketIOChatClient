@@ -12,9 +12,13 @@ import UIKit
 public final class LiveChatView: UIView {    
     //MARK: Init
     private weak var socket: SocketIOChatClient?
+    private weak var bottomConstraint: NSLayoutConstraint?
     private let tableView = LiveChatTableView()
+    private var oldContentOffset = CGFloat(-1)
+    private var isDraggingKeyboard = false
     private lazy var toolbar: LiveChatToolbar = {
         let _toolbar = LiveChatToolbar(socket: self.socket!)
+        _toolbar.delegate = self
         return _toolbar
     }()
 
@@ -28,22 +32,23 @@ public final class LiveChatView: UIView {
         self.socket = socket
         clipsToBounds = true
         backgroundColor = UIColor.clearColor()
+        tableView.delegate = self
 
         //Add Subviews
         addSubview(tableView)
-        constrain(self, tableView) { view, tableView in
-            tableView.edges == inset(view.edges, 0)
+        constrain(self, tableView) { [unowned self] view, tableView in
+            tableView.top == view.top
+            tableView.left == view.left
+            tableView.right == view.right
+            self.bottomConstraint = (tableView.bottom == view.bottom - self.toolbar.frame.size.height)
         }
 
         //Listen to keyboard change and user tap
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidChangeFrame:", name: UIKeyboardDidChangeFrameNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
         let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureHandler")
         tableView.addGestureRecognizer(tapGesture)
-
+        
         becomeFirstResponder()
-
-        tableView.contentInset = UIEdgeInsets(top: toolbar.bounds.size.height, left: 0, bottom: 0, right: 0)
     }
     
     //MARK: Keyboard
@@ -54,25 +59,26 @@ public final class LiveChatView: UIView {
     override public var inputAccessoryView: UIView {
         return toolbar
     }
+    
+//    public override func didMoveToSuperview() {
+//        super.didMoveToSuperview()
+//        self.becomeFirstResponder()
+//    }
 
     func tapGestureHandler() {
         self.becomeFirstResponder()
     }
-
-    func keyboardDidChangeFrame(notification: NSNotification) {
-        print("keyboardDidChangeFrame")
-    }
-
-    func keyboardWillChangeFrame(notification: NSNotification) {
-        if bounds.size.height == 0 { return }
-        let endFrame = (notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-
-//        let oldInset = tableView.contentInset.top
-        let newInset = bounds.size.height - endFrame.origin.y
-//        let newOffset = tableView.contentOffset.y - (newInset - oldInset)
-//        tableView.contentOffset = CGPoint(x: 0, y: newOffset)
-        tableView.contentInset = UIEdgeInsets(top: newInset, left: 0, bottom: 0, right: 0)
-    }
+    
+//    func keyboardWillChangeFrame(notification: NSNotification) {
+//        if bounds.size.height == 0 { return }
+//        let endFrame = (notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+//
+//////        let oldInset = tableView.contentInset.top
+////        let newInset = bounds.size.height - endFrame.origin.y
+//////        let newOffset = tableView.contentOffset.y - (newInset - oldInset)
+//////        tableView.contentOffset = CGPoint(x: 0, y: newOffset)
+////        tableView.contentInset = UIEdgeInsets(top: newInset, left: 0, bottom: 0, right: 0)
+//    }
     
     //MARK: Events
     func appendEvent(event: SocketIOEvent) {
@@ -85,5 +91,35 @@ public final class LiveChatView: UIView {
 //        default:
 //            break
 //        }
+    }
+}
+
+extension LiveChatView: LiveChatToolbarDelegate {
+    func liveChatToolbarDidChangePosition(positionY: CGFloat) {
+        if bounds.size.height == 0 { return }
+        let keyboardHeight = bounds.size.height - positionY
+        bottomConstraint?.constant = -keyboardHeight
+        layoutIfNeeded()
+        
+        if isDraggingKeyboard {
+            tableView.contentOffset = CGPoint(x: 0, y: oldContentOffset)
+        } else {
+            oldContentOffset = tableView.contentOffset.y
+            if tableView.dragging {
+                isDraggingKeyboard = true
+            }
+        }
+    }
+}
+
+extension LiveChatView: UITableViewDelegate {
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
+        for cell in tableView.visibleCells as! [EventCell] {
+            cell.alpha = tableView.alphaForCell(cell)
+        }
+    }
+    
+    public func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        isDraggingKeyboard = false
     }
 }
