@@ -148,11 +148,9 @@ extension LiveChatView: EventCellDelegate {
 
 //MARK: LiveChatToolbarDelegate
 extension LiveChatView: LiveChatToolbarDelegate {
-    func liveChatToolbarDidChangePosition(positionY: CGFloat) {
-        if bounds.size.height == 0 { return }
-        
-        let keyboardHeight = bounds.size.height - positionY
-        bottomConstraint?.constant = -keyboardHeight
+    func keyboardDidChangeHeight(height: CGFloat) {
+//        if bounds.size.height == 0 { return }        
+        bottomConstraint?.constant = -height
         layoutIfNeeded()
         
         if isDraggingKeyboard {

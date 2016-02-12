@@ -9,7 +9,7 @@
 import Cartography
 
 protocol LiveChatToolbarDelegate {
-    func liveChatToolbarDidChangePosition(positionY: CGFloat)
+    func keyboardDidChangeHeight(height: CGFloat)
 }
 
 final class LiveChatToolbar: UIView {
@@ -25,8 +25,6 @@ final class LiveChatToolbar: UIView {
         _textView.growingDelegate = self
         _textView.returnKeyType = .Send
         _textView.font = UIFont.systemFontOfSize(15)
-        _textView.activeBackgroundColor = UIColor(white: 1.0, alpha: 0.9)
-        _textView.deactiveBackgroundColor = UIColor(white: 1.0, alpha: 0.2)
         _textView.placeHolder = "Say something..."
         _textView.placeHolderColor = UIColor(white: 1.0, alpha: 0.5)
         _textView.keyboardDismissMode = .Interactive
@@ -118,7 +116,20 @@ final class LiveChatToolbar: UIView {
                 super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
                 return
             }
-            delegate?.liveChatToolbarDidChangePosition(superViewFrame.origin.y)
+            //Calculate keyboard Height
+            let keyboardHeight = UIScreen.mainScreen().bounds.size.height - superViewFrame.origin.y
+            
+            //Set textview alpha
+            if textView.text?.isEmpty != false {
+                var textViewAlpha = (keyboardHeight - bounds.size.height)/200
+                textViewAlpha = max(min(textViewAlpha, 0.9), 0.2)
+                textView.backgroundColor = UIColor(white: 1.0, alpha: textViewAlpha)
+            } else {
+                textView.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
+            }
+            
+            //Callback
+            delegate?.keyboardDidChangeHeight(keyboardHeight)
         } else {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }
@@ -149,8 +160,6 @@ extension LiveChatToolbar: GrowingTextViewDelegate {
         if let heightConstraint = heightConstraint {
             heightConstraint.constant = height + 16
             UIView.animateWithDuration(0.3, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: [.CurveLinear], animations: { () -> Void in
-//                print("super:\(self.superview!)")
-//                print("super.super:\(self.superview!.superview!)")
                 self.superview?.layoutIfNeeded()
                 }, completion: nil)
         }

@@ -17,21 +17,6 @@ class GrowingTextView: UITextView {
     private weak var heightConstraint: NSLayoutConstraint?
     weak var growingDelegate: GrowingTextViewDelegate?
 
-    //MARK: Customizable properties
-    var activeBackgroundColor: UIColor? {
-        didSet {
-            if isFirstResponder() {
-                backgroundColor = activeBackgroundColor
-            }
-        }
-    }
-    var deactiveBackgroundColor: UIColor? {
-        didSet {
-            if !isFirstResponder() {
-                backgroundColor = deactiveBackgroundColor
-            }
-        }
-    }
     var placeHolder: NSString? {
         didSet {
             setNeedsDisplay()
@@ -68,24 +53,12 @@ class GrowingTextView: UITextView {
     
     override func becomeFirstResponder() -> Bool {
         setNeedsDisplay()
-        if let color = activeBackgroundColor {
-//            UIView.animateWithDuration(2.5) { () -> Void in
-                self.backgroundColor = color
-//            }
-        }
         return super.becomeFirstResponder()
     }
 
     override func resignFirstResponder() -> Bool {
         text = text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        if text?.isEmpty != false {
-            setNeedsDisplay()
-            if let color = deactiveBackgroundColor {
-//                UIView.animateWithDuration(2.5) { () -> Void in
-                    self.backgroundColor = color
-//                }
-            }
-        }
+        setNeedsDisplay()
         return super.resignFirstResponder()
     }
     
