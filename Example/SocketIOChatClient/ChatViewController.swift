@@ -22,6 +22,7 @@ class ChatViewController: UIViewController {
     //MARK: ViewController Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        socket.liveChatView.canSendMessage = true
         view.addSubview(socket.liveChatView)
         constrain(view, socket.liveChatView) { view, liveChatView in
             liveChatView.edges == inset(view.edges, 0)

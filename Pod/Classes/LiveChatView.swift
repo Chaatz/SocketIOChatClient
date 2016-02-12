@@ -18,6 +18,15 @@ public final class LiveChatView: UIView {
     //MARK: Core
     private weak var socket: SocketIOChatClient?
     private var eventArray = [SocketIOEvent]()
+    public var canSendMessage = false {
+        didSet {
+            if canSendMessage {
+                becomeFirstResponder()
+            } else {
+                endEditing(true)
+            }
+        }
+    }
 
     //MARK: UI
     private var screenHeight = max(UIScreen.mainScreen().bounds.size.height, UIScreen.mainScreen().bounds.size.width)
@@ -61,7 +70,7 @@ public final class LiveChatView: UIView {
     
     //MARK: Keyboard
     public override func canBecomeFirstResponder() -> Bool {
-        return true
+        return canSendMessage
     }
     
     override public var inputAccessoryView: UIView {
