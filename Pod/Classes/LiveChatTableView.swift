@@ -6,18 +6,8 @@
 //
 //
 
-import UIKit
-
 final class LiveChatTableView: UITableView {
-    //MARK: Customizable Properties
-    let eventCacheSize = 100
-    let visibleProportion = CGFloat(0.3)
-    let fadingDistance = CGFloat(100)
-
     //MARK: Init
-    private var eventArray = [SocketIOEvent]()
-    private var screenHeight = max(UIScreen.mainScreen().bounds.size.height, UIScreen.mainScreen().bounds.size.width)
-
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
@@ -35,8 +25,6 @@ final class LiveChatTableView: UITableView {
         tableFooterView = UIView()
         rowHeight = UITableViewAutomaticDimension
         estimatedRowHeight = 44.0
-        dataSource = self
-//        delegate = self
         keyboardDismissMode = .Interactive
         
         let podBundle = NSBundle(forClass: self.classForCoder)
@@ -53,72 +41,6 @@ final class LiveChatTableView: UITableView {
         transform = CGAffineTransformMakeScale (1,-1);
     }
     
-    //MARK: Managing Events
-    func appendEvent(event: SocketIOEvent) {
-        self.beginUpdates()
-        
-        if self.eventArray.count > self.eventCacheSize {
-            self.eventArray.removeLast()
-            let indexPath = NSIndexPath(forRow: self.eventArray.count, inSection: 0)
-            self.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-        }
-        
-        self.eventArray.insert(event, atIndex: 0)
-        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-        self.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
-
-        self.endUpdates()
-    }
-}
-
-//MARK: UITableViewDataSource
-extension LiveChatTableView: UITableViewDataSource {
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return eventArray.count
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let event = eventArray[indexPath.row]
-        
-        switch event.type {
-        case .NewMessage:
-            let cell = tableView.dequeueReusableCellWithIdentifier("MessageCell", forIndexPath: indexPath) as! MessageCell
-            cell.delegate = self
-            cell.event = eventArray[indexPath.row]
-            return cell
-        case .UserJoined, .UserLeft, .Login:
-            let cell = tableView.dequeueReusableCellWithIdentifier("UserJoinCell", forIndexPath: indexPath) as! UserJoinCell
-            cell.delegate = self
-            cell.event = eventArray[indexPath.row]
-            return cell
-        }
-    }
-}
-
-//extension LiveChatTableView: UITableViewDelegate {
-//    func scrollViewDidScroll(scrollView: UIScrollView) {
-//        for cell in visibleCells as! [EventCell] {
-//            cell.alpha = alphaForCell(cell)
-//        }
-//    }
-//}
-
-extension LiveChatTableView: EventCellDelegate {
-    func alphaForCell(cell: EventCell) -> CGFloat {
-        let visiblePos = screenHeight * visibleProportion
-        let cellPos = cell.frame.origin.y - contentOffset.y - contentInset.top
-        if cellPos <= visiblePos {
-            return 1.0
-        } else if cellPos < visiblePos + fadingDistance {
-            return 1.0 - ((cellPos - visiblePos) / fadingDistance)
-        } else {
-            return 0.0
-        }
-    }
 }
 
 //MARK: Handle Touches

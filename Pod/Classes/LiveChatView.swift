@@ -7,13 +7,20 @@
 //
 
 import Cartography
-import UIKit
 
 public final class LiveChatView: UIView {    
-    //MARK: Init
+    //MARK: Customizable
+    let eventCacheSize = 100
+    let visibleProportion = CGFloat(0.3)
+    let fadingDistance = CGFloat(100)
+
+    //MARK: Core
     private weak var socket: SocketIOChatClient?
+    private var eventArray = [SocketIOEvent]()
+
+    //MARK: UI
+    private var screenHeight = max(UIScreen.mainScreen().bounds.size.height, UIScreen.mainScreen().bounds.size.width)
     private weak var bottomConstraint: NSLayoutConstraint?
-    private let tableView = LiveChatTableView()
     private var oldContentOffset = CGFloat(-1)
     private var isDraggingKeyboard = false
     private lazy var toolbar: LiveChatToolbar = {
@@ -21,10 +28,12 @@ public final class LiveChatView: UIView {
         _toolbar.delegate = self
         return _toolbar
     }()
-
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
+    private lazy var tableView: LiveChatTableView = {
+        let _tableView = LiveChatTableView()
+        _tableView.dataSource = self
+        _tableView.delegate = self
+        return _tableView
+    }()
     
     //MARK: Layout
     public convenience init(socket: SocketIOChatClient) {
@@ -32,7 +41,6 @@ public final class LiveChatView: UIView {
         self.socket = socket
         clipsToBounds = true
         backgroundColor = UIColor.clearColor()
-        tableView.delegate = self
 
         //Add Subviews
         addSubview(tableView)
@@ -44,7 +52,6 @@ public final class LiveChatView: UIView {
         }
 
         //Listen to keyboard change and user tap
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
         let tapGesture = UITapGestureRecognizer(target: self, action: "tapGestureHandler")
         tableView.addGestureRecognizer(tapGesture)
         
@@ -60,43 +67,90 @@ public final class LiveChatView: UIView {
         return toolbar
     }
     
-//    public override func didMoveToSuperview() {
-//        super.didMoveToSuperview()
-//        self.becomeFirstResponder()
-//    }
-
     func tapGestureHandler() {
         self.becomeFirstResponder()
     }
     
-//    func keyboardWillChangeFrame(notification: NSNotification) {
-//        if bounds.size.height == 0 { return }
-//        let endFrame = (notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-//
-//////        let oldInset = tableView.contentInset.top
-////        let newInset = bounds.size.height - endFrame.origin.y
-//////        let newOffset = tableView.contentOffset.y - (newInset - oldInset)
-//////        tableView.contentOffset = CGPoint(x: 0, y: newOffset)
-////        tableView.contentInset = UIEdgeInsets(top: newInset, left: 0, bottom: 0, right: 0)
-//    }
-    
-    //MARK: Events
+    //MARK: Managing Events
     func appendEvent(event: SocketIOEvent) {
-        tableView.appendEvent(event)
-//        switch event.type {
-//        case .Login, .UserJoined, .UserLeft:
-//            if let userCount = event.userCount {
-//                
-//            }
-//        default:
-//            break
-//        }
+        tableView.beginUpdates()
+        
+        if self.eventArray.count > self.eventCacheSize {
+            self.eventArray.removeLast()
+            let indexPath = NSIndexPath(forRow: self.eventArray.count, inSection: 0)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+        }
+        
+        self.eventArray.insert(event, atIndex: 0)
+        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+        
+        tableView.endUpdates()
+    }
+
+}
+
+//MARK: UITableViewDataSource
+extension LiveChatView: UITableViewDataSource {
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return eventArray.count
+    }
+  public   
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let event = eventArray[indexPath.row]
+        
+        switch event.type {
+        case .NewMessage:
+            let cell = tableView.dequeueReusableCellWithIdentifier("MessageCell", forIndexPath: indexPath) as! MessageCell
+            cell.delegate = self
+            cell.event = eventArray[indexPath.row]
+            return cell
+        case .UserJoined, .UserLeft, .Login:
+            let cell = tableView.dequeueReusableCellWithIdentifier("UserJoinCell", forIndexPath: indexPath) as! UserJoinCell
+            cell.delegate = self
+            cell.event = eventArray[indexPath.row]
+            return cell
+        }
     }
 }
 
+//MARK: UITableViewDelegate
+extension LiveChatView: UITableViewDelegate {
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
+        for cell in tableView.visibleCells as! [EventCell] {
+            cell.alpha = alphaForCell(cell)
+        }
+    }
+    
+    public func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        isDraggingKeyboard = false
+    }
+}
+
+//MARK: EventCellDelegate
+extension LiveChatView: EventCellDelegate {
+    func alphaForCell(cell: EventCell) -> CGFloat {
+        let visiblePos = screenHeight * visibleProportion
+        let cellPos = cell.frame.origin.y - tableView.contentOffset.y
+        if cellPos <= visiblePos {
+            return 1.0
+        } else if cellPos < visiblePos + fadingDistance {
+            return 1.0 - ((cellPos - visiblePos) / fadingDistance)
+        } else {
+            return 0.0
+        }
+    }
+}
+
+//MARK: LiveChatToolbarDelegate
 extension LiveChatView: LiveChatToolbarDelegate {
     func liveChatToolbarDidChangePosition(positionY: CGFloat) {
         if bounds.size.height == 0 { return }
+        
         let keyboardHeight = bounds.size.height - positionY
         bottomConstraint?.constant = -keyboardHeight
         layoutIfNeeded()
@@ -109,17 +163,5 @@ extension LiveChatView: LiveChatToolbarDelegate {
                 isDraggingKeyboard = true
             }
         }
-    }
-}
-
-extension LiveChatView: UITableViewDelegate {
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
-        for cell in tableView.visibleCells as! [EventCell] {
-            cell.alpha = tableView.alphaForCell(cell)
-        }
-    }
-    
-    public func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        isDraggingKeyboard = false
     }
 }
