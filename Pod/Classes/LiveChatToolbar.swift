@@ -42,7 +42,12 @@ final class LiveChatToolbar: UIView {
         return _button
     }()
     
-    //MARK: Layout
+    lazy private var activityIndicatorView: UIActivityIndicatorView = {
+        let _activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .White)
+        _activityIndicatorView.hidesWhenStopped = true
+        return _activityIndicatorView
+    }()
+    
     convenience init(socket: SocketIOChatClient) {
         self.init(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.size.width, height: 50))
         self.socket = socket
@@ -60,15 +65,17 @@ final class LiveChatToolbar: UIView {
         addSubview(line)
         addSubview(textView)
         addSubview(sendButton)
+        addSubview(activityIndicatorView)
         
-        constrain(self, sendButton, textView, line, gradientView) { view, sendButton, textView, line, gradientView in
+        constrain(self, line, gradientView) { view, line, gradientView in
             gradientView.edges == inset(view.edges, -20, 0, -44, 0)
-            
             line.top == view.top
             line.left == view.left + 10
             line.right == view.right - 10
             line.height == max(0.5, 1.0 / UIScreen.mainScreen().scale)
+        }
 
+        constrain(self, sendButton, textView, activityIndicatorView) { view, sendButton, textView, activityIndicatorView in
             sendButton.top == view.top
             sendButton.bottom == view.bottom
             sendButton.right == view.right - 10
@@ -76,9 +83,12 @@ final class LiveChatToolbar: UIView {
             textView.left == view.left + 10
             textView.right == sendButton.left - 10
             textView.centerY == view.centerY
+            
+            activityIndicatorView.center == sendButton.center
         }
     }
     
+    //MARK: Layout
     override func willMoveToSuperview(newSuperview: UIView?) {
         super.willMoveToSuperview(newSuperview)
         guard let newSuperview = newSuperview else {
@@ -102,12 +112,7 @@ final class LiveChatToolbar: UIView {
         if message.isEmpty { return }
         if socket?.sendMessage(message) == true{
             textView.text = nil
-//        } else {
-//            let alertController = UIAlertController(title: "Network problem", message: "Please try again", preferredStyle: .Alert)
-//            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-//            presentViewController(alertController, animated: true, completion: nil)
         }
-//        endEditing(true)
     }
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
@@ -134,6 +139,16 @@ final class LiveChatToolbar: UIView {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }
     }
+    
+    func startLoading() {
+        sendButton.hidden = true
+        activityIndicatorView.startAnimating()
+    }
+    
+    func stopLoading() {
+        activityIndicatorView.stopAnimating()
+        sendButton.hidden = false
+    }
 }
 
 //MARK: UITextViewDelegate (Press Enter, Characters Limit)
@@ -147,8 +162,9 @@ extension LiveChatToolbar: UITextViewDelegate {
     }
     
     func textViewDidChange(textView: UITextView) {
-        if textView.text.characters.count > 140 {
-            let endIndex = textView.text.startIndex.advancedBy(140)
+        guard let maxMessageLength = socket?.liveChatView.maxMessageLength else { return }
+        if textView.text.characters.count > maxMessageLength {
+            let endIndex = textView.text.startIndex.advancedBy(maxMessageLength)
             textView.text = textView.text.substringToIndex(endIndex)
             textView.undoManager?.removeAllActions()
         }

@@ -40,6 +40,7 @@ class EventCell: UITableViewCell {
             break
         }
     }
+    
 }
 
 //MARK: Cell for chat message
@@ -47,6 +48,7 @@ final class MessageCell: EventCell {
     @IBOutlet private weak var nameLabel: UILabel!
     @IBOutlet private weak var messageLabel: UILabel!
     @IBOutlet private weak var iconView: UIImageView!
+    @IBOutlet private weak var colorView: UIView!
     var event: SocketIOEvent? {
         didSet {
             bubbleView.backgroundColor = UIColor(white: 1.0, alpha: 0.9)
@@ -54,9 +56,11 @@ final class MessageCell: EventCell {
             if let event = event {
                 nameLabel.text = "@" + event.username
                 messageLabel.text = event.message
+                colorView.backgroundColor = event.identityColor
             } else {
                 nameLabel.text = "@"
                 messageLabel.text = " "
+                colorView.backgroundColor = UIColor.clearColor()
             }
         }
     }

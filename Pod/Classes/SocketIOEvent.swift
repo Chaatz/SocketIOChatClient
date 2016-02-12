@@ -14,9 +14,24 @@ public struct SocketIOEvent {
         case NewMessage
     }
     public var type: Type
+    public var userId: Int
     public var username: String
     public var message: String?
     public var userCount: Int?
+    
+    public var identityColor: UIColor {
+        if userId <= 2 {
+            return UIColor(red: 249.0/255.0, green: 222.0/255.0, blue: 143.0/255.0, alpha: 1.0)
+        } else if userId <= 4 {
+            return UIColor(red: 153.0/255.0, green: 214.0/255.0, blue: 165.0/255.0, alpha: 1.0)
+        } else if userId <= 6 {
+            return UIColor(red: 161.0/255.0, green: 219.0/255.0, blue: 202.0/255.0, alpha: 1.0)
+        } else if userId <= 8 {
+            return UIColor(red: 166.0/255.0, green: 208.0/255.0, blue: 212.0/255.0, alpha: 1.0)
+        } else {
+            return UIColor(red: 214.0/255.0, green: 220.0/255.0, blue: 161.0/255.0, alpha: 1.0)
+        }
+    }
     
     //MARK: For all incoming events
     init?(dict: AnyObject?, type: Type) {
@@ -25,6 +40,7 @@ public struct SocketIOEvent {
         if username.isEmpty { return nil }
         self.type = type
         self.username = username
+        self.userId = SocketIOEvent.randomUserId()
         
         switch type {
         case .NewMessage:
@@ -45,6 +61,7 @@ public struct SocketIOEvent {
         guard let numUsers = dict["numUsers"] as? Int else { return nil }
         self.type = type
         self.username = username
+        self.userId = SocketIOEvent.randomUserId()
         self.userCount = numUsers
     }
     
@@ -52,6 +69,12 @@ public struct SocketIOEvent {
     init?(username: String, message: String, type: Type) {
         self.type = type
         self.username = username
+        self.userId = SocketIOEvent.randomUserId()
         self.message = message
+    }
+    
+    static func randomUserId() -> Int {
+        let number = arc4random_uniform(9) + 1
+        return Int(number)
     }
 }

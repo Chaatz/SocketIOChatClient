@@ -39,12 +39,16 @@ class ChatViewController: UIViewController {
 }
 
 extension ChatViewController: SocketIOChatClientDelegate {
-    func SocketIOConnectSuccess() {
+    func socketIOConnectSuccess() {
     }
-    func SocketIOConnectFail() {
+    func socketIOConnectFail() {
     }
-    func SocketIODisconnected() {
+    func socketIODisconnected() {
     }
-    func SocketIOReceiveEvent(message: SocketIOEvent) {
+    func socketIOReceiveEvent(message: SocketIOEvent) {
+    }
+    func socketIOSendMessageFail() {
+    }
+    func socketIOSendMessageSuccess() {
     }
 }

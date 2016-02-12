@@ -10,9 +10,10 @@ import Cartography
 
 public final class LiveChatView: UIView {    
     //MARK: Customizable
-    let eventCacheSize = 100
-    let visibleProportion = CGFloat(0.3)
-    let fadingDistance = CGFloat(100)
+    public let eventCacheSize = 100
+    public let visibleProportion = CGFloat(0.3)
+    public let fadingDistance = CGFloat(100)
+    public let maxMessageLength = 140
 
     //MARK: Core
     private weak var socket: SocketIOChatClient?
@@ -23,7 +24,7 @@ public final class LiveChatView: UIView {
     private weak var bottomConstraint: NSLayoutConstraint?
     private var oldContentOffset = CGFloat(-1)
     private var isDraggingKeyboard = false
-    private lazy var toolbar: LiveChatToolbar = {
+    lazy var toolbar: LiveChatToolbar = {
         let _toolbar = LiveChatToolbar(socket: self.socket!)
         _toolbar.delegate = self
         return _toolbar
@@ -48,7 +49,7 @@ public final class LiveChatView: UIView {
             tableView.top == view.top
             tableView.left == view.left
             tableView.right == view.right
-            self.bottomConstraint = (tableView.bottom == view.bottom - self.toolbar.frame.size.height)
+            self.bottomConstraint = (tableView.bottom == view.bottom)
         }
 
         //Listen to keyboard change and user tap

@@ -9,16 +9,15 @@
 import SocketIOClientSwift
 
 public protocol SocketIOChatClientDelegate: class {
-    func SocketIOConnectSuccess()
-    func SocketIOConnectFail()
-    func SocketIODisconnected()
-    func SocketIOReceiveEvent(message: SocketIOEvent)
+    func socketIOConnectSuccess()
+    func socketIOConnectFail()
+    func socketIODisconnected()
+    func socketIOReceiveEvent(event: SocketIOEvent)
+    func socketIOSendMessageFail()
+    func socketIOSendMessageSuccess()
 }
 
 final public class SocketIOChatClient {
-    //MARK: Customizable Properties
-    public var maxMessageLength = 140
-
     //MARK: Init
     private let socket: SocketIOClient
     private let timeout: Int
@@ -26,7 +25,9 @@ final public class SocketIOChatClient {
     private let showLog: Bool
     private weak var delegate: SocketIOChatClientDelegate?
     public lazy var liveChatView: LiveChatView = {
-        return LiveChatView(socket: self)
+        let _liveChatView = LiveChatView(socket: self)
+        _liveChatView.toolbar.startLoading()
+        return _liveChatView
     }()
     
     public init(socketURL: NSURL, username: String, timeout: Int, delegate: SocketIOChatClientDelegate?, showLog: Bool) {
@@ -34,7 +35,7 @@ final public class SocketIOChatClient {
         self.delegate = delegate
         self.showLog = showLog
         self.username = username
-        socket = SocketIOClient(socketURL: socketURL, options: [.Log(showLog), .ReconnectWait(5)])
+        socket = SocketIOClient(socketURL: socketURL, options: [.Log(showLog), .ReconnectWait(3)])
     }
     
     deinit {
@@ -50,23 +51,27 @@ final public class SocketIOChatClient {
         socket.on("connect") { [weak self] (data, Ack) -> Void in
             if let username = self?.username {
                 print("✅✅✅✅✅connect✅✅✅✅✅")
-                self?.delegate?.SocketIOConnectSuccess()
+                self?.delegate?.socketIOConnectSuccess()
                 self?.socket.emit("add user", username)
+                self?.liveChatView.toolbar.stopLoading()
             }
         }
         
         socket.on("disconnect") { [weak self] (data, Ack) -> Void in
             print("❎❎❎❎❎disconnect❎❎❎❎❎")
-            self?.delegate?.SocketIODisconnected()
+            self?.delegate?.socketIODisconnected()
+            self?.liveChatView.toolbar.startLoading()
         }
         
-        socket.on("reconnect") { (data, Ack) -> Void in
+        socket.on("reconnect") { [weak self] (data, Ack) -> Void in
             print("✴️✴️✴️✴️✴️reconnect✴️✴️✴️✴️✴️")
+            self?.liveChatView.toolbar.startLoading()
         }
         
-        socket.on("reconnectAttempt") { (data, Ack) -> Void in
-            print("✴️✴️✴️✴️✴️reconnectAttempt✴️✴️✴️✴️✴️")
-        }
+//        socket.on("reconnectAttempt") { [weak self] (data, Ack) -> Void in
+//            print("✴️✴️✴️✴️✴️reconnectAttempt✴️✴️✴️✴️✴️")
+//            self?.liveChatView.toolbar.startLoading()
+//        }
         
         socket.on("error") { (data, Ack) -> Void in
             print("⛔️⛔️⛔️⛔️⛔️error⛔️⛔️⛔️⛔️⛔️")
@@ -95,7 +100,7 @@ final public class SocketIOChatClient {
         }
 
         socket.connect(timeoutAfter: timeout, withTimeoutHandler: { [weak self] () -> Void in
-            self?.delegate?.SocketIOConnectFail()
+            self?.delegate?.socketIOConnectFail()
         })
     }
     
@@ -107,17 +112,19 @@ final public class SocketIOChatClient {
     private func receiveEvent(event: SocketIOEvent?) {
         guard let event = event else { return }
         liveChatView.appendEvent(event)
-        delegate?.SocketIOReceiveEvent(event)
+        delegate?.socketIOReceiveEvent(event)
     }
     
     func sendMessage(message: String) -> Bool {
         if socket.status == SocketIOClientStatus.Connected {
-            socket.emit("new message", message)
             if let event = SocketIOEvent(username: self.username, message: message, type: .NewMessage) {
+                socket.emit("new message", message)
                 receiveEvent(event)
             }
+            delegate?.socketIOSendMessageSuccess()
             return true
         } else {
+            delegate?.socketIOSendMessageFail()
             return false
         }
     }
