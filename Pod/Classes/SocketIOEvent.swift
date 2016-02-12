@@ -16,6 +16,7 @@ public struct SocketIOEvent {
     public var type: Type
     public var userId: Int
     public var username: String
+    
     public var message: String?
     public var userCount: Int?
     
@@ -33,46 +34,19 @@ public struct SocketIOEvent {
         }
     }
     
-    //MARK: For all incoming events
-    init?(dict: AnyObject?, type: Type) {
-        guard let dict = dict as? [String: AnyObject] else { return nil }
-        guard let username = dict["username"] as? String else { return nil }
-        if username.isEmpty { return nil }
+    public init(type: Type, username: String) {
         self.type = type
-        self.username = username
         self.userId = SocketIOEvent.randomUserId()
-        
-        switch type {
-        case .NewMessage:
-            guard let message = dict["message"] as? String else { return nil }
-            if message.isEmpty { return nil }
-            self.message = message
-        case .UserJoined, .UserLeft:
-            guard let numUsers = dict["numUsers"] as? Int else { return nil }
-            self.userCount = numUsers
-        default:
-            break
-        }
+        self.username = username
     }
-    
-    //MARK: For login event
-    init?(dict: AnyObject?, username: String, type: Type) {
-        guard let dict = dict as? [String: AnyObject] else { return nil }
-        guard let numUsers = dict["numUsers"] as? Int else { return nil }
+
+    public init(type: Type, username: String, message: String) {
         self.type = type
-        self.username = username
         self.userId = SocketIOEvent.randomUserId()
-        self.userCount = numUsers
-    }
-    
-    //MARK: For message sent by myself
-    init?(username: String, message: String, type: Type) {
-        self.type = type
         self.username = username
-        self.userId = SocketIOEvent.randomUserId()
         self.message = message
     }
-    
+
     static func randomUserId() -> Int {
         let number = arc4random_uniform(9) + 1
         return Int(number)

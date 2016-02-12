@@ -12,9 +12,7 @@ public protocol SocketIOChatClientDelegate: class {
     func socketIOConnectSuccess()
     func socketIOConnectFail()
     func socketIODisconnected()
-    func socketIOReceiveEvent(event: SocketIOEvent)
-    func socketIOSendMessageFail()
-    func socketIOSendMessageSuccess()
+    func socketIOEventForReceivedData(eventName: String, items: NSArray?) -> SocketIOEvent?
 }
 
 final public class SocketIOChatClient {
@@ -44,9 +42,11 @@ final public class SocketIOChatClient {
     
     //MARK: Socket Life Cycle
     public func connect() {
-//        socket.onAny {
-//            print("[Socket.IO Event] \($0.event), \($0.items)")
-//        }
+        
+        socket.onAny { [weak self] (event) -> Void in
+            guard let event = self?.delegate?.socketIOEventForReceivedData(event.event, items: event.items) else { return }
+            self?.liveChatView.appendEvent(event)
+        }
         
         socket.on("connect") { [weak self] (data, Ack) -> Void in
             if let username = self?.username {
@@ -68,38 +68,12 @@ final public class SocketIOChatClient {
             self?.liveChatView.toolbar.startLoading()
         }
         
-//        socket.on("reconnectAttempt") { [weak self] (data, Ack) -> Void in
-//            print("✴️✴️✴️✴️✴️reconnectAttempt✴️✴️✴️✴️✴️")
-//            self?.liveChatView.toolbar.startLoading()
-//        }
-        
         socket.on("error") { (data, Ack) -> Void in
             print("⛔️⛔️⛔️⛔️⛔️error⛔️⛔️⛔️⛔️⛔️")
         }
         
-        socket.on("login") { [weak self] (data, Ack) -> Void in
-            if let username = self?.username {
-                let event = SocketIOEvent(dict: data[0], username: username, type: .Login)
-                self?.receiveEvent(event)
-            }
-        }
-        
-        socket.on("user joined") { [weak self] (data, Ack) -> Void in
-            let event = SocketIOEvent(dict: data[0], type: .UserJoined)
-            self?.receiveEvent(event)
-        }
-
-        socket.on("user left") { [weak self] (data, Ack) -> Void in
-            let event = SocketIOEvent(dict: data[0], type: .UserLeft)
-            self?.receiveEvent(event)
-        }
-
-        socket.on("new message") { [weak self] (data, Ack) -> Void in
-            let event = SocketIOEvent(dict: data[0], type: .NewMessage)
-            self?.receiveEvent(event)
-        }
-
         socket.connect(timeoutAfter: timeout, withTimeoutHandler: { [weak self] () -> Void in
+            print("⛔️⛔️⛔️⛔️⛔️connect fail⛔️⛔️⛔️⛔️⛔️")
             self?.delegate?.socketIOConnectFail()
         })
     }
@@ -109,22 +83,13 @@ final public class SocketIOChatClient {
     }
     
     //MARK: Handle Events
-    private func receiveEvent(event: SocketIOEvent?) {
-        guard let event = event else { return }
-        liveChatView.appendEvent(event)
-        delegate?.socketIOReceiveEvent(event)
-    }
-    
     func sendMessage(message: String) -> Bool {
         if socket.status == SocketIOClientStatus.Connected {
-            if let event = SocketIOEvent(username: self.username, message: message, type: .NewMessage) {
-                socket.emit("new message", message)
-                receiveEvent(event)
-            }
-            delegate?.socketIOSendMessageSuccess()
+            socket.emit("new message", message)
+            let event = SocketIOEvent(type: .NewMessage, username: self.username, message: message)
+            liveChatView.appendEvent(event)
             return true
         } else {
-            delegate?.socketIOSendMessageFail()
             return false
         }
     }

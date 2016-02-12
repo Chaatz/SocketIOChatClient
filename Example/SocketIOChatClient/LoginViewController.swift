@@ -12,6 +12,7 @@ class LoginViewController: UIViewController {
     
     //MARK: Init
     @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var sendMessageSwitch: UISwitch!
     
     //MARK: ViewController Life Cycle
     override func viewDidLoad() {
@@ -32,6 +33,7 @@ class LoginViewController: UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let vc = segue.destinationViewController as? ChatViewController else { return }
         vc.username = sender as? String
+        vc.canSendMessage = sendMessageSwitch.on
     }
 
     @IBAction func connectButtonTapped() {

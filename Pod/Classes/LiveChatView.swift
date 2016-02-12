@@ -10,10 +10,10 @@ import Cartography
 
 public final class LiveChatView: UIView {    
     //MARK: Customizable
-    public let eventCacheSize = 100
-    public let visibleProportion = CGFloat(0.3)
-    public let fadingDistance = CGFloat(100)
-    public let maxMessageLength = 140
+    public var eventCacheSize = 100
+    public var visibleProportion = CGFloat(0.3)
+    public var fadingDistance = CGFloat(100)
+    public var maxMessageLength = 140
 
     //MARK: Core
     private weak var socket: SocketIOChatClient?
@@ -31,7 +31,7 @@ public final class LiveChatView: UIView {
     //MARK: UI
     private var screenHeight = max(UIScreen.mainScreen().bounds.size.height, UIScreen.mainScreen().bounds.size.width)
     private weak var bottomConstraint: NSLayoutConstraint?
-    private var oldContentOffset = CGFloat(-1)
+    private var oldContentOffset = CGFloat(0)
     private var isDraggingKeyboard = false
     lazy var toolbar: LiveChatToolbar = {
         let _toolbar = LiveChatToolbar(socket: self.socket!)
@@ -159,7 +159,6 @@ extension LiveChatView: EventCellDelegate {
 //MARK: LiveChatToolbarDelegate
 extension LiveChatView: LiveChatToolbarDelegate {
     func keyboardDidChangeHeight(height: CGFloat) {
-//        if bounds.size.height == 0 { return }        
         bottomConstraint?.constant = -height
         layoutIfNeeded()
         

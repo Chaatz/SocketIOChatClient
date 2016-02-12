@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="jf3-ju-uar">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="jf3-ju-uar">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -60,19 +60,39 @@
                                     <action selector="connectButtonTapped" destination="YX0-fG-lTl" eventType="touchUpInside" id="j5s-BY-rSQ"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Can send message" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n1N-N5-BYj">
+                                <rect key="frame" x="227" y="148" width="146" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nJb-5u-4pY">
+                                <rect key="frame" x="276" y="177" width="51" height="31"/>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="nJb-5u-4pY" firstAttribute="leading" secondItem="n1N-N5-BYj" secondAttribute="trailing" constant="-97" id="Fgt-cQ-t6c"/>
+                            <constraint firstItem="nJb-5u-4pY" firstAttribute="centerX" secondItem="rLA-j5-uju" secondAttribute="centerX" id="OKd-nR-Div"/>
+                            <constraint firstItem="nJb-5u-4pY" firstAttribute="top" secondItem="n1N-N5-BYj" secondAttribute="bottom" constant="8" id="V7Z-P0-ZHW"/>
                             <constraint firstItem="eX8-UV-VsR" firstAttribute="leading" secondItem="BBp-F3-ucY" secondAttribute="trailing" constant="8" id="X2g-pc-78B"/>
+                            <constraint firstItem="n1N-N5-BYj" firstAttribute="top" secondItem="BBp-F3-ucY" secondAttribute="bottom" constant="46" id="Yzh-TV-deZ"/>
                             <constraint firstItem="BBp-F3-ucY" firstAttribute="leading" secondItem="rLA-j5-uju" secondAttribute="leadingMargin" id="ixm-do-Llt"/>
                             <constraint firstItem="eX8-UV-VsR" firstAttribute="trailing" secondItem="rLA-j5-uju" secondAttribute="trailingMargin" id="q8s-Qm-FC2"/>
                             <constraint firstItem="eX8-UV-VsR" firstAttribute="top" secondItem="6pq-Ac-JV7" secondAttribute="bottom" constant="8" id="qwS-yj-cLn"/>
                             <constraint firstItem="BBp-F3-ucY" firstAttribute="top" secondItem="6pq-Ac-JV7" secondAttribute="bottom" constant="8" id="tiH-WX-Kei"/>
+                            <constraint firstItem="n1N-N5-BYj" firstAttribute="centerX" secondItem="rLA-j5-uju" secondAttribute="centerX" id="xzI-pU-g3L"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Fgt-cQ-t6c"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" title="User Name" id="Znx-i2-XRb"/>
                     <connections>
+                        <outlet property="sendMessageSwitch" destination="nJb-5u-4pY" id="9wa-no-7v5"/>
                         <outlet property="textField" destination="BBp-F3-ucY" id="Pcn-nz-8k3"/>
                         <segue destination="vXZ-lx-hvc" kind="show" identifier="ChatViewControllerSegue" id="AHy-Y3-cGD"/>
                     </connections>
